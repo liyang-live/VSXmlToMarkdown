@@ -12,7 +12,7 @@ namespace VSXmlToMarkdown
 {
 
     /// <summary>
-    /// 标准注释
+    /// 标准注释,,需要安装GhostDoc工具
     /// <group>Orm帮助类</group>
     /// <obsolete>是否弃用</obsolete>
     /// </summary>
@@ -31,6 +31,20 @@ namespace VSXmlToMarkdown
         public Main()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// Tests the specified identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <example>
+        ///    <code>
+        ///    </code>
+        /// </example>
+        /// <exception cref="System.Exception">
+        /// </exception>
+        public void Test(string id)
+        { 
         }
     }
 
