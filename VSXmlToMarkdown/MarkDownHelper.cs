@@ -5,11 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System;
+using System.Runtime.InteropServices;
 
 namespace VSXmlToMarkdown
 {
     public static class MarkDownHelper
     {
+
+        public static List<string> m_LogList = new List<string>();
 
         /// <summary>
         /// Generates the header.
@@ -91,7 +94,8 @@ namespace VSXmlToMarkdown
                     //注释目录生成
                     // builder.AppendLine($" - [{catelog}]({filename}) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**{intr.Trim()}**");
 
-                    m_Catelog.Add(new Catelog {
+                    m_Catelog.Add(new Catelog
+                    {
                         catelog = catelog,
                         filename = filename,
                         Intr = intr,
@@ -137,13 +141,14 @@ namespace VSXmlToMarkdown
 
             foreach (var item in catelogGroup)
             {
-                builder.AppendLine($" - **<font size=3 face=\"幼圆\" color=#FF0080>{item.Key}</font>** ");
+                builder.AppendLine($" - ### **<font size=3 face=\"幼圆\" color=#FF0080>{item.Key}</font>** ");
 
                 int sort = 0;
                 foreach (var itemCatelog in item.Select(s => s).ToList())
                 {
+                    
                     //builder.AppendLine($"   - [{itemCatelog.Obsolete}{itemCatelog.catelog}]({itemCatelog.filename}) <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **<font size=2 face=\"幼圆\" color=#FF0080>```C# {itemCatelog.Intr.Trim()} ```</font>** ");
-                    builder.AppendLine($"   - <font size=2 face=\"幼圆\" color=#FF0080>{sort}、[{itemCatelog.Obsolete}{itemCatelog.catelog}]({itemCatelog.filename}) </font>   ");
+                    builder.AppendLine($"   - #### **<font size=3 face=\"幼圆\" color=#FF0080>{sort}、</font>[{itemCatelog.Obsolete}{itemCatelog.catelog}](../doc{itemCatelog.filename})**   ");
                     builder.AppendLine($"        ```c#  ");
                     builder.AppendLine($"      {itemCatelog.Intr.Trim()}");
                     builder.AppendLine($"        ``` ");
@@ -208,7 +213,11 @@ namespace VSXmlToMarkdown
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"错误数据:{item.Name.AsString()}  错误信息:{ex.ToString()}");
+                            m_LogList.Add("");
+                            string msg = $"错误数据:{item.Name.AsString()}  错误信息:{ex.ToString()}";
+                            m_LogList.Add(msg);
+                            File.AppendAllText($"{DateTime.Now.ToString("yyyy-MM-dd")}.log", msg);
+                            //Console.WriteLine($"错误数据:{item.Name.AsString()}  错误信息:{ex.ToString()}");
                         }
                     }
                 }
@@ -259,7 +268,11 @@ namespace VSXmlToMarkdown
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"错误数据:{item.Name.AsString()}  错误信息:{ex.ToString()}");
+                        m_LogList.Add("");
+                        string msg = $"错误数据:{item.Name.AsString()}  错误信息:{ex.ToString()}";
+                        m_LogList.Add(msg);
+                        File.AppendAllText($"{DateTime.Now.ToString("yyyy-MM-dd")}.log", msg);
+                        //Console.WriteLine($"错误数据:{item.Name.AsString()}  错误信息:{ex.ToString()}");
                     }
                 }
             }

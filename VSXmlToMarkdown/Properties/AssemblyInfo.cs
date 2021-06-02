@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("VSXmlToMarkdown")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("VSXml生成Markdown文档工具")]
+[assembly: AssemblyDescription("https://www.blog.liyang.love/")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("https://www.blog.liyang.love/")]
 [assembly: AssemblyProduct("VSXmlToMarkdown")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
