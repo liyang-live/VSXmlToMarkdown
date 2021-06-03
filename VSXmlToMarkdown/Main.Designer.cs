@@ -32,7 +32,6 @@ namespace VSXmlToMarkdown
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.txtFile = new System.Windows.Forms.TextBox();
-            this.btnOk = new System.Windows.Forms.Button();
             this.btnBroswer = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.listBox1 = new System.Windows.Forms.ListBox();
@@ -45,7 +44,6 @@ namespace VSXmlToMarkdown
             // 
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.txtFile);
-            this.panel1.Controls.Add(this.btnOk);
             this.panel1.Controls.Add(this.btnBroswer);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -69,21 +67,11 @@ namespace VSXmlToMarkdown
             this.txtFile.Size = new System.Drawing.Size(557, 25);
             this.txtFile.TabIndex = 5;
             // 
-            // btnOk
-            // 
-            this.btnOk.Location = new System.Drawing.Point(789, 12);
-            this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 23);
-            this.btnOk.TabIndex = 4;
-            this.btnOk.Text = "生成文档";
-            this.btnOk.UseVisualStyleBackColor = true;
-            this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
-            // 
             // btnBroswer
             // 
             this.btnBroswer.Location = new System.Drawing.Point(687, 12);
             this.btnBroswer.Name = "btnBroswer";
-            this.btnBroswer.Size = new System.Drawing.Size(75, 23);
+            this.btnBroswer.Size = new System.Drawing.Size(162, 38);
             this.btnBroswer.TabIndex = 3;
             this.btnBroswer.Text = "浏览文件";
             this.btnBroswer.UseVisualStyleBackColor = true;
@@ -135,7 +123,6 @@ namespace VSXmlToMarkdown
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtFile;
-        private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnBroswer;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.ListBox listBox1;

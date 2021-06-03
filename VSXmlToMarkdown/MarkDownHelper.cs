@@ -79,7 +79,7 @@ namespace VSXmlToMarkdown
 
                         if (item.Summary.Obsolete.AsString() != "")
                         {
-                            obsolete = "【<font size=3 color=red>弃用的</font>】";
+                            obsolete = "⚡<font size=3 color=red>【弃用】</font>";
                             obsoleteText = item.Summary.Obsolete.AsString();
                         }
                         if (item.Summary.Group.AsString() != "")
@@ -89,7 +89,7 @@ namespace VSXmlToMarkdown
                     }
 
                     //文件名
-                    filename = $"/{doc.Assembly.Name}/{catelog}.md#{catelog}".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
+                    filename = $"/{doc.Assembly.Name}/{catelog}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
 
                     //注释目录生成
                     // builder.AppendLine($" - [{catelog}]({filename}) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**{intr.Trim()}**");
@@ -148,7 +148,7 @@ namespace VSXmlToMarkdown
                 {
 
                     //builder.AppendLine($"   - [{itemCatelog.Obsolete}{itemCatelog.catelog}]({itemCatelog.filename}) <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **<font size=2 face=\"幼圆\" color=#FF0080>```C# {itemCatelog.Intr.Trim()} ```</font>** ");
-                    builder.AppendLine($"   - #### **<font size=3 face=\"幼圆\" color=#FF0080>{sort}、</font>[{itemCatelog.Obsolete}{itemCatelog.catelog}](../doc{itemCatelog.filename})**   ");
+                    builder.AppendLine($"   - #### **<font size=3 face=\"幼圆\" color=#FF0080>{sort}、</font>[{itemCatelog.Obsolete}{itemCatelog.catelog}](../doc{itemCatelog.filename}#{itemCatelog.catelog.Replace(".","")})**   ");
                     builder.AppendLine($"        ```c#  ");
                     builder.AppendLine($"      {itemCatelog.Intr.Trim()}");
                     builder.AppendLine($"        ``` ");
