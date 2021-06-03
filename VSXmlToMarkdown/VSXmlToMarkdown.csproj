@@ -33,7 +33,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -114,6 +114,7 @@
     <Content Include="aaxhz-oo8qf-001.ico" />
     <Content Include="av8jb-vaqt9-001.ico" />
     <Content Include="bitbug_favicon.ico" />
+    <Content Include="Lenovo.HIS.cUtils.XML" />
     <Content Include="微信截图_20210601175940.png" />
     <Content Include="微信截图_20210601180013.png" />
   </ItemGroup>
