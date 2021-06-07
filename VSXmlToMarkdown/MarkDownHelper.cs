@@ -258,10 +258,6 @@ namespace VSXmlToMarkdown
             foreach (var item in mesmList)
             {
 
-                if (item.Name.Contains("Execute(System.Collections.Generic.Dictionary{System.String,System.Object})"))
-                {
-                }
-
                 //M:Lenovo.HIS.Common.FuncAgeHelper.GetAgeByBirthday(System.Nullable{System.DateTime},System.Int32,System.Int32,System.Int32,System.Int32)
                 //M:Lenovo.HIS.Common.FuncDefaultHttpHelper.HttpRequest2(Lenovo.HIS.Common.EnumHttpMethodType2,Lenovo.HIS.Common.EnumContextTypes2,System.Collections.Generic.Dictionary{System.String,System.String},System.Collections.Generic.Dictionary{System.String,System.Object})
                 //方法
@@ -276,11 +272,6 @@ namespace VSXmlToMarkdown
                         //var paras = item.Name.AsString().Replace("M:" + name + ".", "").Replace(")", "").Split('(').ToList();
 
                         //paras.Remove("");
-
-                        if (methodName1 == "ReadCard")
-                        {
-
-                        }
 
                         //参数
                         var paras = GetParamTypes(item.Name.AsString());
@@ -318,12 +309,13 @@ namespace VSXmlToMarkdown
                         }
 
                         //参数组合
-                        builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} |");
+                        string methodFileName = Escape(methodName1.Replace("<T>", "&lt;T&gt;")) + Escape(item.Name.Replace("<T>", "&lt;T&gt;")).GetHashCode();
+                        builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodFileName}.md#{methodFileName})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} |");
 
-                        m_UrlList.Add(new SeeasoLink { FileName = $"{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md", Ulr = $"../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")}" });
+                        //m_UrlList.Add(new SeeasoLink { FileName = $"{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md", Ulr = $"../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")}" });
 
                         //生成方法说明  $"{methodName.Replace("<T>", "&lt;T&gt;")}.md"
-                        GenerateExample(item, name, methodName1, assemblyName, filename);
+                        GenerateExample(item, name, methodName1, assemblyName, filename, methodFileName);
 
                     }
                     catch (Exception ex)
@@ -430,7 +422,7 @@ namespace VSXmlToMarkdown
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static void GenerateExample(Member member, string name, string methodName, string assemblyName, string filename)
+        public static void GenerateExample(Member member, string name, string methodName, string assemblyName, string filename,string methodFileName)
         {
 
             StringBuilder builderContentTitle = new StringBuilder();
@@ -680,9 +672,9 @@ namespace VSXmlToMarkdown
             #endregion
             // string fileName = $"doc/{assemblyName}/{filename}/{methodName}.md";
 
-            WriteFile("doc" + filename, $"{methodName.Replace("<T>", "&lt;T&gt;")}.md", builderContentTitle.ToString());
+            WriteFile("doc" + filename, $"{methodFileName}.md", builderContentTitle.ToString());
 
-            m_UrlList.Add(new SeeasoLink { FileName = $"{methodName.Replace("<T>", "&lt;T&gt;")}.md", Ulr = "doc" + filename });
+            //m_UrlList.Add(new SeeasoLink { FileName = $"{methodName.Replace("<T>", "&lt;T&gt;")}.md", Ulr = "doc" + filename });
 
             //File.WriteAllText(fileName, builderContentTitle.ToString());
             // }

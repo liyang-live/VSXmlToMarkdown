@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -52,6 +53,9 @@ namespace VSXmlToMarkdown
                 txtFile.Text = string.Join(";", openFileDialog1.FileNames);
 
                 m_FilenNames = openFileDialog1.FileNames;
+                string path1 = AppDomain.CurrentDomain.BaseDirectory + "/doc";
+
+                Directory.Delete(path1, true);
 
                 foreach (var item in m_FilenNames)
                 {
