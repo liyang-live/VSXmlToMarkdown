@@ -29,6 +29,7 @@ namespace VSXmlToMarkdown
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.txtFile = new System.Windows.Forms.TextBox();
@@ -109,6 +110,7 @@ namespace VSXmlToMarkdown
             this.ClientSize = new System.Drawing.Size(990, 670);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
             this.Text = "Vs注释生成Markdown文档";
             this.panel1.ResumeLayout(false);
