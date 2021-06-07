@@ -5128,6 +5128,8 @@
             <summary>
             CA认证方法
             注:本辅助类为调用第三方CA插件辅助，为保护业务正常流转，当发生异常时为保证正常业务不中断将直接捕获并将返回正确值
+            <group>CA帮助类</group>
+            <obsolete></obsolete>
             </summary>
         </member>
         <member name="M:Lenovo.HIS.cUtils.FuncCA.CheckDevice">
@@ -5162,26 +5164,58 @@
         </member>
         <member name="M:Lenovo.HIS.cUtils.FuncCA.GetCertPictureInfoByUserId(System.Int32)">
             <summary>
-            获取用户签章
+             获取用户签章
+              <group></group>
+               <obsolete></obsolete>
             </summary>
-            <param name="userId"></param>
-            <returns></returns>
+            <param name="userId">用户Id</param>
+            <returns>返回用户签名信息<see cref="T:Lenovo.HIS.Entities.EntityUserCertPicture" >用户签名信息</see></returns>
+            <example>
+            //示例代码如下：
+               <code>
+               EntityUserCertPicture certPicture=GetCertPictureInfoByUserId(用户Id);
+               </code>
+            </example>
+            <exception cref="T:Lenovo.HIS.Common.AnxhitHISException">该方法当用户找不到时会抛出该异常:code:10002, msg:找不到用户信息!</exception>
+            <exception cref="T:System.Exception">该方法内部未捕获任何异常，当异常发生时由框架自动捕获</exception>
         </member>
         <member name="M:Lenovo.HIS.cUtils.FuncCA.GetCertPictureByUserId(System.Int32)">
             <summary>
-            获取用户签章
+            获取用户签章图片对象，当数据不存在时返回Null，该方法会自动缓存图片，第一次调用会去数据库进行获取，后续将对象缓存下来。
+              <group></group>
+               <obsolete></obsolete>
             </summary>
-            <param name="userId"></param>
-            <returns></returns>
+            <param name="userId">用户Id</param>
+            <returns>Bitmap图片对象</returns>
+            <example>
+            获取用户图片
+               <code>
+               Bitmap  btm=GetCertPictureByUserId(用户Id);
+               </code>
+            </example>
+            <exception cref="T:System.Exception">
+            该方法内部未捕获任何异常，当异常发生时由框架自动捕获
+            </exception>
         </member>
         <member name="M:Lenovo.HIS.cUtils.FuncCA.GetCertPictureByUserId(System.Int32,System.Int32,System.Int32)">
             <summary>
-            获取用户签章
+            获取用户签章图片对象，当数据不存在时返回Null，该方法会自动缓存图片，第一次调用会去数据库进行获取，后续将对象缓存下来。
+              <group></group>
+               <obsolete></obsolete>
             </summary>
-            <param name="userId"></param>
-            <param name="weight">宽度</param>
-            <param name="width">高度</param>
-            <returns></returns>
+            <param name="userId">用户Id</param>
+            <param name="width">宽度</param>
+            <param name="weight">高度</param>
+            <returns>Bitmap图片对象</returns>
+            <example>
+            获取用户图片
+               <code>
+               Bitmap  btm=GetCertPictureByUserId(用户Id);
+               </code>
+            </example>
+            <exception cref="T:System.Exception">
+            该方法内部未捕获任何异常，当异常发生时由框架自动捕获
+            </exception>
         </member>
         <member name="M:Lenovo.HIS.cUtils.FuncCA.CheckLogin(System.String,System.String)">
             <summary>
@@ -6327,7 +6361,7 @@
                ShowMsgByStyle("测试");
                
                //为false
-               ShowMsgByStyle("<b>测试</b>",false);
+               ShowMsgByStyle("&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6357,7 +6391,7 @@
                ShowMsgByStyle(this,"测试");
                
                //为false
-               ShowMsgByStyle(this,"<b>测试</b>",false);
+               ShowMsgByStyle(this,"&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6385,7 +6419,7 @@
                ShowErrorMsgByStyle("测试");
                
                //为false
-               ShowErrorMsgByStyle("<b>测试</b>",false);
+               ShowErrorMsgByStyle("&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6415,7 +6449,7 @@
                ShowErrorMsgByStyle(this,"测试");
                
                //为false
-               ShowErrorMsgByStyle(this,"<b>测试</b>",false);
+               ShowErrorMsgByStyle(this,"&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6443,7 +6477,7 @@
                ShowErrorMsg2ByStyle("测试");
                
                //为false
-               ShowErrorMsg2ByStyle("<b>测试</b>",false);
+               ShowErrorMsg2ByStyle("&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6471,7 +6505,7 @@
                ShowWarningMsgByStyle("测试");
                
                //为false
-               ShowWarningMsgByStyle("<b>测试</b>",false);
+               ShowWarningMsgByStyle("&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6501,7 +6535,7 @@
                ShowWarningMsgByStyle(this,"测试");
                
                //为false
-               ShowWarningMsgByStyle(this,"<b>测试</b>",false);
+               ShowWarningMsgByStyle(this,"&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6533,7 +6567,7 @@
               var result= ShowMsgYesNoByStyle("测试");
                
                //为false
-              var result= ShowMsgYesNoByStyle("<b>测试</b>",false);
+              var result= ShowMsgYesNoByStyle("&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6567,7 +6601,7 @@
               var result= ShowMsgYesNo(this,"测试");
                
                //为false
-              var result= ShowMsgYesNo(this,"<b>测试</b>",false);
+              var result= ShowMsgYesNo(this,"&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6601,7 +6635,7 @@
               EnumMsgResult result= ShowMsgYesNoCancelByStyle("测试");
                
                //为false
-              EnumMsgResult result= ShowMsgYesNoCancelByStyle("<b>测试</b>",false);
+              EnumMsgResult result= ShowMsgYesNoCancelByStyle("&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6637,7 +6671,7 @@
               EnumMsgResult result= ShowMsgYesNoCancelByStyle(this,"测试");
                
                //为false
-              EnumMsgResult result= ShowMsgYesNoCancelByStyle(this,"<b>测试</b>",false);
+              EnumMsgResult result= ShowMsgYesNoCancelByStyle(this,"&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6671,7 +6705,7 @@
                var result= ShowMsgOKCancelByStyle("测试");
                
                //为false
-               var result= ShowMsgOKCancelByStyle("<b>测试</b>",false);
+               var result= ShowMsgOKCancelByStyle("&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">
@@ -6707,7 +6741,7 @@
               EnumMsgResult result= ShowMsgOKCancelByStyle(this,"测试");
                
                //为false
-              EnumMsgResult result= ShowMsgOKCancelByStyle(this,"<b>测试</b>",false);
+              EnumMsgResult result= ShowMsgOKCancelByStyle(this,"&lt;b&gt;测试&lt;/b&gt;",false);
                </code>
             </example>
             <exception cref="T:System.Exception">

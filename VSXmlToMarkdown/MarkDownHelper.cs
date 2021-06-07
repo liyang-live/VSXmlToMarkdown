@@ -13,6 +13,9 @@ namespace VSXmlToMarkdown
     {
 
         public static List<string> m_LogList = new List<string>();
+        public static List<SeeasoLink> m_UrlList = new List<SeeasoLink>();
+
+        public static Doc m_Doc = new Doc();
 
         /// <summary>
         /// Generates the header.
@@ -27,7 +30,7 @@ namespace VSXmlToMarkdown
             XmlDocument xml = new XmlDocument();
             xml.LoadXml(File.ReadAllText(path));
 
-            var doc = XmlSerializeHelper.Deserialize<Doc>(ConvertToMarkdown(File.ReadAllText(path)));
+            var doc = XmlSerializeHelper.Deserialize<Doc>(ConvertToMarkdown(File.ReadAllText(path), false));
 
             GenerateCatalog(doc);
 
@@ -43,6 +46,8 @@ namespace VSXmlToMarkdown
         /// <returns></returns>
         public static void GenerateCatalog(Doc doc)
         {
+            m_Doc = doc;
+
 
             StringBuilder builder = new StringBuilder();
 
@@ -80,7 +85,7 @@ namespace VSXmlToMarkdown
                         if (item.Summary.Obsolete.AsString() != "")
                         {
                             obsolete = "⚡<font size=3 color=red>【弃用】</font>";
-                            obsoleteText = item.Summary.Obsolete.AsString();
+                            obsoleteText = "⚡<font size=3 color=red>【弃用说明】</font>" + item.Summary.Obsolete.AsString();
                         }
                         if (item.Summary.Group.AsString() != "")
                         {
@@ -90,6 +95,8 @@ namespace VSXmlToMarkdown
 
                     //文件名
                     filename = $"/{doc.Assembly.Name}/{catelog}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
+
+                    m_UrlList.Add(new SeeasoLink { FileName = $"{catelog}.md", Ulr = filename });
 
                     //注释目录生成
                     // builder.AppendLine($" - [{catelog}]({filename}) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**{intr.Trim()}**");
@@ -148,14 +155,23 @@ namespace VSXmlToMarkdown
                 {
 
                     //builder.AppendLine($"   - [{itemCatelog.Obsolete}{itemCatelog.catelog}]({itemCatelog.filename}) <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **<font size=2 face=\"幼圆\" color=#FF0080>```C# {itemCatelog.Intr.Trim()} ```</font>** ");
-                    builder.AppendLine($"   - #### **<font size=3 face=\"幼圆\" color=#FF0080>{sort}、</font>[{itemCatelog.Obsolete}{itemCatelog.catelog}](../doc{itemCatelog.filename}#{itemCatelog.catelog.Replace(".","")})**   ");
+                    builder.AppendLine($"   - #### **<font size=3 face=\"幼圆\" color=#FF0080>{sort}、</font>[{itemCatelog.Obsolete}{itemCatelog.catelog}](../doc{itemCatelog.filename}#{itemCatelog.catelog.Replace(".", "")})**   ");
                     builder.AppendLine($"        ```c#  ");
                     builder.AppendLine($"      {itemCatelog.Intr.Trim()}");
+
+                    if (!string.IsNullOrEmpty(itemCatelog.ObsoleteText))
+                    {
+                        builder.AppendLine($"      {itemCatelog.ObsoleteText.Trim()}");
+                    }
+
                     builder.AppendLine($"        ``` ");
 
                     sort++;
                 }
             }
+
+            m_UrlList.Add(new SeeasoLink { FileName = $"{doc.Assembly.Name}.md", Ulr = $"doc/{doc.Assembly.Name}.md" });
+
             //生成根目录
             File.WriteAllText($"doc/{doc.Assembly.Name}.md", builder.ToString());
         }
@@ -182,12 +198,13 @@ namespace VSXmlToMarkdown
             builderBody.AppendLine($"| ---- | ---- | ---- |");
             foreach (var item in mesmList)
             {
+
                 //方法、构造函数
                 if (item.Name.Contains("M:"))
                 {
 
                     //构造函数  M:Lenovo.HIS.Common.DataField.#ctor(System.String)
-                    if (item.Name.Contains("#ctor"))
+                    if (item.Name.Contains("#ctor")|| item.Name.Contains("#cctor"))
                     {
                         try
                         {
@@ -204,11 +221,11 @@ namespace VSXmlToMarkdown
 
                                 for (int i = 0; i < paras.Count; i++)
                                 {
-                                    paras[i] = "[" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i])})" + "&nbsp;&nbsp;" + item.Param[i].Name;
+                                    paras[i] = "[" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i], methodName, item.Name)})" + "&nbsp;&nbsp;" + item.Param[i].Name;
                                 }
                             }
 
-                            builderBody.AppendLine($" | {methodName}({string.Join(",", paras).Trim()}) | {string.Join("", item.Param.Select(s => s.Name + " : " + s.Text.AsString().Trim() + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} | ");
+                            builderBody.AppendLine($" | {methodName}({string.Join(",<br />", paras).Trim()}) | {string.Join("", item.Param.Select(s => s.Name + " : " + s.Text.AsString().Trim() + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} | ");
 
                         }
                         catch (Exception ex)
@@ -229,24 +246,35 @@ namespace VSXmlToMarkdown
 
             builderBody.AppendLine($" ## 方法");
 
-            builderBody.AppendLine($"|  方法    |   参数   |   说明   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- |");
+            builderBody.AppendLine($"|  方法    |   参数   |   说明   |   返回值   |");
+            builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
             //Field — 方法
             foreach (var item in mesmList)
             {
+
+                if (item.Name.Contains("Execute(System.Collections.Generic.Dictionary{System.String,System.Object})"))
+                {
+                }
+
                 //M:Lenovo.HIS.Common.FuncAgeHelper.GetAgeByBirthday(System.Nullable{System.DateTime},System.Int32,System.Int32,System.Int32,System.Int32)
                 //M:Lenovo.HIS.Common.FuncDefaultHttpHelper.HttpRequest2(Lenovo.HIS.Common.EnumHttpMethodType2,Lenovo.HIS.Common.EnumContextTypes2,System.Collections.Generic.Dictionary{System.String,System.String},System.Collections.Generic.Dictionary{System.String,System.Object})
                 //方法
-                if (item.Name.Contains("M:") && !item.Name.Contains("#ctor"))
+                if (item.Name.Contains("M:") && !(item.Name.Contains("#ctor")|| item.Name.Contains("#cctor")))
                 {
                     try
                     {
+
                         //方法名
                         string methodName1 = item.Name.AsString().Replace("M:" + name + ".", "").Split('(')[0];
 
                         //var paras = item.Name.AsString().Replace("M:" + name + ".", "").Replace(")", "").Split('(').ToList();
 
                         //paras.Remove("");
+
+                        if (methodName1 == "ReadCard")
+                        {
+
+                        }
 
                         //参数
                         var paras = GetParamTypes(item.Name.AsString());
@@ -255,12 +283,38 @@ namespace VSXmlToMarkdown
                         {
                             for (int i = 0; i < paras.Count; i++)
                             {
-                                paras[i] = " [" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i])})" + " &nbsp;&nbsp;" + item.Param[i].Name;
+                                paras[i] = " [" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i], methodName1, item.Name.AsString())})" + " &nbsp;&nbsp;" + item.Param[i].Name;
                             }
                         }
 
+                        string obsolete = ""; //弃用
+                        string obsoleteText = ""; //弃用
+                        string group = "";                    //组
+                        string intr = "";//介绍
+                        if (item.Summary != null && item.Summary.Text != null)
+                        {
+                            intr = string.Join(",", item.Summary.Text);
+
+                            if (item.Summary.Obsolete.AsString() != "")
+                            {
+                                obsolete = "⚡<font size=3 color=red>【弃用】</font>";
+                                obsoleteText = "⚡<font size=3 color=red>【弃用说明】</font>" + item.Summary.Obsolete.AsString();
+                            }
+                            if (item.Summary.Group.AsString() != "")
+                            {
+                                group = item.Summary.Group.AsString();
+                            }
+                        }
+                        string str = "";
+                        if (paras != null && paras.Count > 0)
+                        {
+                            str = "<br />";
+                        }
+
                         //参数组合
-                        builderBody.AppendLine($" | [{methodName1}](../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md)({ConvertToMarkdown(string.Join(",<br />", paras).Trim())}) | {string.Join("", item.Param.Select(s => s.Name + " : " + s.Text.AsString().Trim() + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} | ");
+                        builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} |");
+
+                        m_UrlList.Add(new SeeasoLink { FileName = $"{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md", Ulr = $"../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")}" });
 
                         //生成方法说明  $"{methodName.Replace("<T>", "&lt;T&gt;")}.md"
                         GenerateExample(item, name, methodName1, assemblyName, filename);
@@ -410,16 +464,19 @@ namespace VSXmlToMarkdown
                         //参数组合
                         if (member?.Param[i]?.Seealso != null)
                         {
+                            var _SeeAlso = member?.Param[i]?.Seealso?.Cref == null ? "" : $"参见:[{Escape(member?.Param[i]?.Seealso?.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(member?.Param[i]?.Seealso?.Cref, member?.Param[i]?.Seealso?.Cref.AsString(), member?.Param[i]?.Seealso?.Cref.AsString()) + ")";
 
                             builderContentTitle.AppendLine($" | {member.Param[i].Name.Trim()}" +
                                 $"| {paras[i]} | {ConvertToMarkdown(member.Param[i].Text.Trim()).Replace("{", "&lt;").Replace("}", "&gt;")} " +
-                                $"| {member?.Param[i]?.Seealso?.Text}参见:{member?.Param[i]?.Seealso?.Cref} | ");
+                                $"| {member?.Param[i]?.Seealso?.Text}{_SeeAlso} | ");
                         }
                         else
                         {
+                            var _SeeAlso = member?.Param[i]?.See?.Cref == null ? "" : $"参见:[{Escape(member?.Param[i]?.See?.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(member?.Param[i]?.See?.Cref, member?.Param[i]?.See?.Cref.AsString(), member?.Param[i]?.See?.Cref.AsString()) + ")";
+
                             builderContentTitle.AppendLine($" | {member.Param[i].Name.Trim()}" +
                             $"| {paras[i]} | {ConvertToMarkdown(member.Param[i].Text.AsString().Trim()).Replace("{", "&lt;").Replace("}", "&gt;")} " +
-                            $"| {member?.Param[i]?.See?.Text}参见:{member?.Param[i]?.See?.Cref} | ");
+                            $"| {member?.Param[i]?.See?.Text}<br/>{_SeeAlso} | ");
                         }
                     }
                 }
@@ -457,7 +514,10 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Returns?.Seealso)
                     {
-                        builderContentTitle.AppendLine($"| {Escape(item.Cref)} |  | {Escape(item.Text)} | 参见:{Escape(item.Cref)} |");
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        //var _SeeAlso = item.Cref == null ? "" : "参见:" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString());
+
+                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsReturns = false;
                     }
                 }
@@ -466,7 +526,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Returns?.See)
                     {
-                        builderContentTitle.AppendLine($"| {Escape(item.Cref)} |  | {Escape(item.Text)} | 参见:{Escape(item.Cref)} |");
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
+
+                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsReturns = false;
                     }
                 }
@@ -501,7 +563,9 @@ namespace VSXmlToMarkdown
 
                 if (member?.Exception != null)
                 {
-                    builderContentTitle.AppendLine($"| {Escape(member?.Exception.Cref.AsString().Replace("T:", ""))} |  | {Escape(member?.Exception.Text)} | 参见:{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))} |");
+                    var _SeeAlso = member?.Exception.Cref == null ? "" : $"参见:[{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(member?.Exception.Cref.AsString().Replace("T:", "")), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString()) + ")";
+
+                    builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(member?.Exception.Cref.AsString().Replace("T:", "")), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString())} |  | {Escape(member?.Exception.Text)} | {_SeeAlso} |");
                     _IsException = false;
                 }
 
@@ -510,7 +574,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Exception?.Seealso)
                     {
-                        builderContentTitle.AppendLine($"| {Escape(item.Cref.AsString().Replace("T:", ""))} |  | {Escape(item.Text)} | 参见:{Escape(item.Cref.AsString().Replace("T:", ""))} |");
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString()) + ")";
+
+                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsException = false;
                     }
                 }
@@ -519,7 +585,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Exception?.See)
                     {
-                        builderContentTitle.AppendLine($"| {Escape(item.Cref.AsString().Replace("T:", ""))} |  | {Escape(item.Text)} | 参见:{Escape(item.Cref.AsString().Replace("T:", ""))} |");
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString()) + ")";
+
+                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsException = false;
                     }
                 }
@@ -557,7 +625,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Remarks?.Seealso)
                     {
-                        builderContentTitle.AppendLine($"| {Escape(item.Cref)} |  | {Escape(item.Text)} | 参见:{Escape(item.Cref)} |");
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString()) + ")";
+
+                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsRemarks = false;
                     }
                 }
@@ -566,7 +636,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Remarks?.See)
                     {
-                        builderContentTitle.AppendLine($"| {Escape(item.Cref)} |  | {Escape(item.Text)} | 参见:{Escape(item.Cref)} |");
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString()) + ")";
+
+                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsRemarks = false;
                     }
                 }
@@ -603,6 +675,8 @@ namespace VSXmlToMarkdown
             // string fileName = $"doc/{assemblyName}/{filename}/{methodName}.md";
 
             WriteFile("doc" + filename, $"{methodName.Replace("<T>", "&lt;T&gt;")}.md", builderContentTitle.ToString());
+
+            m_UrlList.Add(new SeeasoLink { FileName = $"{methodName.Replace("<T>", "&lt;T&gt;")}.md", Ulr = "doc" + filename });
 
             //File.WriteAllText(fileName, builderContentTitle.ToString());
             // }
@@ -672,23 +746,144 @@ namespace VSXmlToMarkdown
             return !string.IsNullOrWhiteSpace(str) ? str : "";
         }
 
-        public static string GetTypeUrl(string str)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="methodName"></param>
+        /// <param name="FillName"></param>
+        /// <returns></returns>
+        public static string GetTypeUrl(string str, string methodName, string FillName)
         {
-            if (str.Contains("System.")) return $"https://docs.microsoft.com/zh-cn/dotnet/api/" + str.ToLower().Replace("[]", "");
+            if (str.Contains("System.") && !str.Contains(".HIS."))
+            {
+                return $"https://docs.microsoft.com/zh-cn/dotnet/api/" + str.ToLower().Replace("[]", "");
+            }
+
+            if (str.Contains(".HIS."))
+            {
+                //M:方法   M:+#ctor  构造函数    F:变量  P:属性  E:事件
+
+                //构造函数
+                if (str.Contains("M:") && str.Contains("#ctor"))
+                {
+
+                }
+
+                //方法
+                if (str.Contains("M:") && !str.Contains("#ctor"))
+                {
+
+                }
+
+                //变量
+                if (str.Contains("F:"))
+                {
+
+                }
+
+                //类型
+                if (str.Contains("T:"))
+                {
+                    var FillInfo = GetCatelog("T:", FillName);
+
+                    return $"../../{FillInfo.Item1}/{FillInfo.Item2}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
+                }
+
+                //属性
+                if (str.Contains("P:"))
+                {
+
+                }
+
+                //事件
+                if (str.Contains("E:"))
+                {
+
+                }
+
+                //.Entities.
+                //类型
+                if (str.Contains(".Entities."))
+                {
+                    var FillInfo = GetCatelog(".Entities.", str);
+
+                    return $"../../{FillInfo.Item1}/{FillInfo.Item2}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
+                }
+
+                return "#";
+
+                //if (!str.Contains(" P:"))
+                //{
+                //    var link = str.Split(new char[] { '{', '}' }, StringSplitOptions.RemoveEmptyEntries);
+
+                //    var url = link[link.Length - 1].Split('.').ToList();
+
+                //    var urlList = m_UrlList.Find(s => s.FileName == url[url.Count - 1] + ".md");
+                //    if (urlList == null)
+                //    {
+                //        return "#";
+                //    }
+
+                //    var strUlr= m_UrlList.Find(s=>s.FileName== url[url.Count-1]+".md").Ulr;
+
+                //    return strUlr;
+                //    //string linklabel = "";
+                //    //int i = 0;
+                //    //url.ForEach(f =>
+                //    //{
+                //    //    if (i != url.Count - 1)
+                //    //    {
+                //    //        linklabel += f;
+                //    //    }
+                //    //    i++;
+                //    //});
+
+                //    //return "../doc/" + linklabel + "/" + url[url.Count - 1] + ".md#" + url[url.Count - 1];
+                //}
+                //return "#";
+            }
             return "#";
         }
 
-        public static string ConvertToMarkdown(string str)
+        public static Tuple<string, string> GetCatelog(string str, string path)
         {
-            return str.Replace("``0", "&lt;T&gt;").Replace("``1", "&lt;T&gt;")
-                     .Replace("``2", "&lt;T&gt;").Replace("``2", "&lt;T&gt;").Replace("``3", "&lt;T&gt;")
-                     .Replace("`0,", "&lt;T&gt;，").Replace("`1,", "&lt;T&gt;，").Replace("`2,", "&lt;T&gt;，").Replace("`3,", "&lt;T&gt;，").Replace("`0,", "&lt;T&gt;，")
-                     .Replace("`0", "&lt;T&gt;").Replace("`1", "&lt;T&gt;").Replace("`2", "&lt;T&gt;").Replace("`3", "&lt;T&gt;");
+            str = path.Replace(str, "");
+
+            string catelog = str.Substring(0, str.LastIndexOf("."));
+
+            string fileName = str.Substring(str.LastIndexOf(".") + 1, str.Length - str.LastIndexOf(".") - 1);
+
+            return new Tuple<string, string>(catelog, fileName);
+
+        }
+
+
+        public static string ConvertToMarkdown(string str, bool isInit = true)
+        {
+            var result = str.Replace("``0", "&lt;T&gt;").Replace("``1", "&lt;T&gt;")
+                      .Replace("``2", "&lt;T&gt;").Replace("``2", "&lt;T&gt;").Replace("``3", "&lt;T&gt;").Replace("``4", "&lt;T&gt;").Replace("``5", "&lt;T&gt;")
+                      .Replace("``6", "&lt;T&gt;").Replace("``7", "&lt;T&gt;").Replace("``8", "&lt;T&gt;").Replace("``9", "&lt;T&gt;")
+                      .Replace("`0,", "&lt;T&gt;，").Replace("`1,", "&lt;T&gt;，").Replace("`2,", "&lt;T&gt;，").Replace("`3,", "&lt;T&gt;，")
+                      .Replace("`4,", "&lt;T&gt;，").Replace("`5,", "&lt;T&gt;，").Replace("`6,", "&lt;T&gt;，").Replace("`7,", "&lt;T&gt;，")
+                      .Replace("`8,", "&lt;T&gt;，").Replace("`9,", "&lt;T&gt;，").Replace("`0,", "&lt;T&gt;，")
+                      .Replace("`0", "&lt;T&gt;").Replace("`1", "&lt;T&gt;").Replace("`2", "&lt;T&gt;").Replace("`3", "&lt;T&gt;")
+                      .Replace("`4", "&lt;T&gt;").Replace("`5", "&lt;T&gt;").Replace("`6", "&lt;T&gt;").Replace("`7", "&lt;T&gt;")
+                      .Replace("`8", "&lt;T&gt;").Replace("`9", "&lt;T&gt;");
+
+            return result;
         }
 
         private static string Escape(string sInput)
         {
-            return sInput.AsString().Replace("\n", " <br/>");
+            return sInput.AsString().Replace("\n", " ").Replace("'", " &#39;")
+                        .Replace("\"", " &quot;")
+                        //.Replace("<", "&lt;")
+                        //.Replace(">", "&gt;")
+                        .Replace(" ", " &nbsp;")
+                        .Replace("©", " &copy;")
+                        .Replace("®", " &reg;")
+                        .Replace("™", " &#8482;");//.Replace("\n", "  "); 
         }
 
         private static string EscapeNoN(string sInput)
@@ -716,5 +911,12 @@ namespace VSXmlToMarkdown
             }
         }
         #endregion
+    }
+
+    public class SeeasoLink
+    {
+        public string Ulr { get; set; }
+
+        public string FileName { get; set; }
     }
 }

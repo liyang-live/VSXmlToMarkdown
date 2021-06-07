@@ -1,0 +1,3896 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Lenovo.HIS.sUtils</name>
+    </assembly>
+    <members>
+        <member name="T:Lenovo.HIS.sUtils.DataLoad">
+            <summary>
+            服务端缓存数据刷新
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DataLoad.LoadSeqList">
+            <summary>
+            更新seq列表
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.ColumnAttributeTypeMapper`1">
+            <summary>
+            Dapper特性
+            <group>Orm</group>
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.ColumnAttributeTypeMapper`1.#ctor">
+            <summary>
+            构造
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.ColumnAttribute">
+            <summary>
+            列属性对应
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.ColumnAttribute.Name">
+            <summary>
+            属性名
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FallbackTypeMapper">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FallbackTypeMapper.#ctor(System.Collections.Generic.IEnumerable{Dapper.SqlMapper.ITypeMap})">
+            <summary>
+            
+            </summary>
+            <param name="mappers"></param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FallbackTypeMapper.FindConstructor(System.String[],System.Type[])">
+            <summary>
+            
+            </summary>
+            <param name="names"></param>
+            <param name="types"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FallbackTypeMapper.GetConstructorParameter(System.Reflection.ConstructorInfo,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="constructor"></param>
+            <param name="columnName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FallbackTypeMapper.GetMember(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="columnName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FallbackTypeMapper.FindExplicitConstructor">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.ColumnMapper">
+            <summary>
+            Dapper特性
+            <group>Orm</group>
+            <obsolete></obsolete>
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.ColumnMapper._Dictionary">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.ColumnMapper.TryTypeMap``1">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.DBDapperHelper">
+            <summary>
+            Dapper帮助类
+            <group>Orm</group>
+            <obsolete></obsolete>
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.DBDapperHelper.m_DBname">
+            <summary>
+            数据库名
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.#ctor(System.String)">
+            <summary>
+            构造方法
+            </summary>
+            <param name="dbName">连接名称</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Execute(System.String,System.Object,System.Nullable{System.Data.CommandType},System.Data.IDbTransaction,System.Nullable{System.Int32})">
+            <summary>
+            单条Sql增删改
+            </summary>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="commandTimeout">超时 毫秒</param>
+            <param name="commandType">语句类型</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Execute(System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+             多条语句执行 事务
+              <group>obsolete弃用的</group>
+               <obsolete>弃用该方法，请使用Execute(List&lt;SQLInfo&gt; sqlList)，自2021-05-21 禁用该方法</obsolete>
+            </summary>
+            <param name="dic"> sql语句及执行的实体参数，实体参数可以是实体类型或者list《实体类型》</param>
+            <returns></returns>
+            <example>
+               <code>
+                // sql语句及执行的实体参数，实体参数可以是实体类型或者list《实体类型》
+                //示例1：
+                Dictionary《string, object》 dic = new Dictionary《string, object》();
+                Person p1 = new Person { id1 = 1, Name = "张三", Remark = DateTime.Now.ToString() };
+                string sql = "insert into Person (id, Name, Remark ) values(:ID1, :Name, :Remark) ";
+                dic.Add(sql, p1);
+                Person p2 = new Person { id1 = 2, Name = "李四" };
+                sql = "update Person set Name=:Name where id=:ID1 ";
+                dic.Add(sql, p2);
+                var rtn = ExecuteTransaction(dic);
+                
+                //示例2：
+                Dictionary 《string, object》 dic = new Dictionary《string, object》();
+                Person p1 = new Person { id1 = 1, Name = "张三", Remark = DateTime.Now.ToString() };
+                Person p2 = new Person { id1 = 2, Name = "李四", Remark = DateTime.Now.ToString() };
+                List《object》 ps = new List《object》();
+                ps.Add(p1);
+                ps.Add(p2);
+                string sql = "insert into Person (id, Name, Remark ) values(:ID1, :Name, :Remark) ";
+                dic.Add(sql, ps);
+                var rtn = ExecuteTransaction(dic);
+               </code>
+            </example>
+            <exception cref="T:System.Exception">
+            </exception>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Execute(System.Collections.Generic.List{Lenovo.HIS.sUtils.SQLInfo})">
+            <summary>
+            执行多条sql
+            </summary>
+            <param name="sqlList"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Execute(Lenovo.HIS.sUtils.SQLInfo)">
+            <summary>
+            执行sql
+            </summary>
+            <param name="sqlInfo"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Query``1(System.String,System.Object,System.Data.IDbTransaction,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            查询列表
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="sql">查询的sql</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="buffered">buffered</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Query``1(Lenovo.HIS.sUtils.SQLInfo,System.Data.IDbTransaction,System.Boolean)">
+            <summary>
+            查询列表
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="sqlInfo">查询的sql</param>
+            <param name="transaction">事务</param>
+            <param name="buffered">buffered</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.QueryNoAttr``1(System.String,System.Object,System.Data.IDbTransaction,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            查询列表,不使用特性，字段要和数据库字段一致
+            </summary>
+            <typeparam name="T">实体类型</typeparam>
+            <param name="sql">查询的sql</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="buffered">buffered</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Query(System.String,System.Object,System.Data.IDbTransaction,System.Boolean,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            查询列表
+            </summary>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="buffered">buffered</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Query``3(System.String,System.Func{``0,``1,``2},System.Object,System.Data.IDbTransaction,System.Boolean,System.String,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            查询列表
+            </summary>
+            <typeparam name="TFirst">实体1</typeparam>
+            <typeparam name="TSecond">实体2</typeparam>
+            <typeparam name="TReturn">返回实体</typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="map"></param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="buffered">buffered</param>
+            <param name="splitOn"></param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Query``4(System.String,System.Func{``0,``1,``2,``3},System.Object,System.Data.IDbTransaction,System.Boolean,System.String,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            查询列表
+            </summary>
+            <typeparam name="TFirst">实体1</typeparam>
+            <typeparam name="TSecond">实体2</typeparam>
+            <typeparam name="TThird">实体3</typeparam>
+            <typeparam name="TReturn">返回实体</typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="map"></param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="buffered">buffered</param>
+            <param name="splitOn"></param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Query``5(System.String,System.Func{``0,``1,``2,``3,``4},System.Object,System.Data.IDbTransaction,System.Boolean,System.String,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            查询列表
+            </summary>
+            <typeparam name="TFirst">实体1</typeparam>
+            <typeparam name="TSecond">实体2</typeparam>
+            <typeparam name="TThird">实体3</typeparam>
+            <typeparam name="TFourth">实体4</typeparam>
+            <typeparam name="TReturn">返回实体</typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="map"></param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="buffered">buffered</param>
+            <param name="splitOn"></param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Query``6(System.String,System.Func{``0,``1,``2,``3,``4,``5},System.Object,System.Data.IDbTransaction,System.Boolean,System.String,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            查询列表
+            </summary>
+            <typeparam name="TFirst">实体1</typeparam>
+            <typeparam name="TSecond">实体2</typeparam>
+            <typeparam name="TThird">实体3</typeparam>
+            <typeparam name="TFourth">实体4</typeparam>
+            <typeparam name="TFifth">实体5</typeparam>
+            <typeparam name="TReturn">返回实体</typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="map"></param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="buffered">buffered</param>
+            <param name="splitOn"></param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Query``7(System.String,System.Func{``0,``1,``2,``3,``4,``5,``6},System.Object,System.Data.IDbTransaction,System.Boolean,System.String,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            查询列表
+            </summary>
+            <typeparam name="TFirst">实体1</typeparam>
+            <typeparam name="TSecond">实体2</typeparam>
+            <typeparam name="TThird">实体3</typeparam>
+            <typeparam name="TFourth">实体4</typeparam>
+            <typeparam name="TFifth">实体5</typeparam>
+            <typeparam name="TSixth">实体6</typeparam>
+            <typeparam name="TReturn">返回实体</typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="map"></param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="buffered">buffered</param>
+            <param name="splitOn"></param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.Query``8(System.String,System.Func{``0,``1,``2,``3,``4,``5,``6,``7},System.Object,System.Data.IDbTransaction,System.Boolean,System.String,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            查询列表
+            </summary>
+            <typeparam name="TFirst">实体1</typeparam>
+            <typeparam name="TSecond">实体2</typeparam>
+            <typeparam name="TThird">实体3</typeparam>
+            <typeparam name="TFourth">实体4</typeparam>
+            <typeparam name="TFifth">实体5</typeparam>
+            <typeparam name="TSixth">实体6</typeparam>
+            <typeparam name="TSeventh">实体7</typeparam>
+            <typeparam name="TReturn">返回实体</typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="map"></param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="buffered">buffered</param>
+            <param name="splitOn"></param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.QueryFirst``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Executes a single-row query, returning the data typed as per T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.QueryFirst(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Return a dynamic object with properties matching the columns
+            </summary>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.QueryFirstOrDefault``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Executes a single-row query, returning the data typed as per T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.QueryFirstOrDefault(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Return a dynamic object with properties matching the columns
+            </summary>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.QuerySingle``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Executes a single-row query, returning the data typed as per T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.QuerySingle(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Return a dynamic object with properties matching the columns
+            </summary>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.QuerySingleOrDefault``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Executes a single-row query, returning the data typed as per T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.QuerySingleOrDefault(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            Return a dynamic object with properties matching the columns
+            </summary>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.DBDapperHelper.QueryMultiple``1(System.String,System.Object,System.Data.IDbTransaction,System.Nullable{System.Int32},System.Nullable{System.Data.CommandType})">
+            <summary>
+            多结果集返回，需要手动关闭并释放GridReader
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="sql">SQL语句</param>
+            <param name="param">操作数据（实体、参数数据等）</param>
+            <param name="transaction">事务</param>
+            <param name="commandTimeout">超时</param>
+            <param name="commandType">语句类型</param>
+            <returns></returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.SQLInfo">
+            <summary>
+            sql语句信息
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLInfo.#ctor">
+            <summary>
+            sql语句信息
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLInfo.#ctor(System.String,Lenovo.HIS.sUtils.OracleDynamicParameters,System.Nullable{System.Data.CommandType},System.Nullable{System.Int32})">
+            <summary>
+            sql语句信息
+            </summary>
+            <param name="sql">sql语句，必须是参数化</param>
+            <param name="param">sql参数</param>
+            <param name="commandType"> 指定如何解释命令字符串。</param>
+            <param name="commandTimeout">超时时间</param>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.SQLInfo.SQL">
+            <summary>
+            sql语句，必须是参数化
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.SQLInfo.Parameters">
+            <summary>
+            sql参数
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.SQLInfo.CommandType">
+            <summary>
+             指定如何解释命令字符串。
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.SQLInfo.CommandTimeout">
+            <summary>
+            超时
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.OracleDynamicParameters">
+            <summary>
+            参数构造类
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleDynamicParameters.Add(System.String,System.Object,System.Data.DbType,System.Nullable{System.Data.ParameterDirection},System.Nullable{System.Int32})">
+            <summary>
+            添加参数
+            </summary>
+            <param name="name"></param>
+            <param name="value"></param>
+            <param name="dbType"></param>
+            <param name="direction"></param>
+            <param name="size"></param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleDynamicParameters.Add(System.String,Oracle.ManagedDataAccess.Client.OracleDbType,System.Data.ParameterDirection)">
+            <summary>
+            添加参数
+            </summary>
+            <param name="name"></param>
+            <param name="oracleDbType"></param>
+            <param name="direction"></param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleDynamicParameters.Add(System.String,Oracle.ManagedDataAccess.Client.OracleDbType,System.Int32,System.Data.ParameterDirection)">
+            <summary>
+            添加参数
+            </summary>
+            <param name="name"></param>
+            <param name="oracleDbType"></param>
+            <param name="size"></param>
+            <param name="direction"></param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleDynamicParameters.AddParameters(System.Data.IDbCommand,Dapper.SqlMapper.Identity)">
+            <summary>
+            添加参数
+            </summary>
+            <param name="command"></param>
+            <param name="identity"></param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleDynamicParameters.Get``1(System.String)">
+            <summary>
+            根据名称获取参数
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="parameterName">参数名称</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleDynamicParameters.Get``1(System.Int32)">
+            <summary>
+            根据索引获取参数
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="index">参数索引</param>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleDynamicParameters.GetParameters">
+            <summary>
+            获取参数
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.EntityParmSql">
+            <summary>
+            执行参数的语句
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.EntityParmSql.SqlText">
+            <summary>
+            sql语句
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.EntityParmSql.Paras">
+            <summary>
+            paras
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncDbLogger">
+            <summary>
+            数据库日志类
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncDbLogger.WriteLogFace(System.String,System.Double,System.Data.IDbDataParameter[],System.Exception)">
+            <summary>
+            日志记录
+            </summary>
+            <param name="_StrSql">执行语句</param>
+            <param name="_Time">耗时</param>
+            <param name="_Param">语句参数</param>
+            <param name="_Ex">异常</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncDbLogger.TimeOutLog(Lenovo.HIS.Entities.EntityCallInf)">
+            <summary>
+            超时日志记录，sql语句执行超过设置时间，则会记录日志
+            </summary>
+            <param name="_wcfInf">wcf调用信息</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncDbLogger.WriteErroLog(Lenovo.HIS.Entities.EntityCallInf)">
+            <summary>
+            异常日志
+            </summary>
+            <param name="_wcfInf">wcf调用信息</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncDbLogger.GetExceptionCmdTextAndParams(System.Exception,System.String,System.Data.IDbDataParameter[])">
+            <summary>
+            组织异常信息
+            </summary>
+            <param name="ex">异常</param>
+            <param name="script">脚本</param>
+            <param name="arrParam">参数数组</param>
+            <returns>拼接内容</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.SqlSugarHelper">
+            <summary>
+            SqlSugar帮助类
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.SqlSugarHelper.Client">
+            <summary>
+            客户端实例
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SqlSugarHelper.m_DBname">
+            <summary>
+            数据库名
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SqlSugarHelper.#ctor(System.String)">
+            <summary>
+            构造 <see cref="T:Lenovo.HIS.sUtils.SqlSugarHelper"/> class.
+            </summary>
+            <param name="dbName">数据库链接名称</param>
+            <example>
+              <code>
+            </code>
+             </example>
+            <exception cref="T:System.Exception">
+            </exception>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.OracleExecEventListener">
+            <summary>
+            对Oracle 语句执行进行监听
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleExecEventListener.WriteLog(Lenovo.HIS.sUtils.OracleExecEventArgs)">
+            <summary>
+            定义处理事件的方法，他与声明事件的delegate具有相同的参数和返回值类型
+            </summary>
+            <param name="e">不包含任何事件数据的 System.EventArgs</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleExecEventListener.WriteLog(Oracle.DataAccess.Client.OracleCommand,System.String,System.Int32)">
+            <summary>
+            记录日志
+            </summary>
+            <param name="command">OracleCommand</param>
+            <param name="ip">IP</param>
+            <param name="port">端口号</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleExecEventListener.Subscribe(Lenovo.HIS.sUtils.OracleExecEventSource)">
+            <summary>
+            订阅事件
+            </summary>
+            <param name="evenSource"></param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleExecEventListener.UnSubscribe(Lenovo.HIS.sUtils.OracleExecEventSource)">
+            <summary>
+            取消订阅事件
+            </summary>
+            <param name="evenSource"></param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.OracleExecEventSource">
+            <summary>
+            oracle 语句执行事件，用于记录业务日志
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.OracleExecEventSource.OracleExecEventHandle">
+            <summary>
+            声明委托
+            </summary>
+            <param name="args">参数数组</param>
+        </member>
+        <member name="E:Lenovo.HIS.sUtils.OracleExecEventSource.OracleExecEvent">
+            <summary>
+            声明event对象
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleExecEventSource.OnOracleExecEvent(Lenovo.HIS.sUtils.OracleExecEventArgs)">
+            <summary>
+            事件触发方法
+            </summary>
+            <param name="e">不包含任何事件数据的 System.EventArgs</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleExecEventSource.RaiseEvent(Oracle.DataAccess.Client.OracleCommand,System.String,System.String,System.String)">
+            <summary>
+            引发事件
+            </summary>
+            <param name="command">OracleCommand</param>
+            <param name="ip">IP</param>
+            <param name="appCode">应用ID</param>
+            <param name="dbName">数据库名</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleExecEventSource.RaiseEvent(Oracle.DataAccess.Client.OracleCommand,System.String,System.Int32)">
+            <summary>
+            引发事件
+            </summary>
+            <param name="command">OracleCommand</param>
+            <param name="ip">IP</param>
+            <param name="port">端口号</param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.OracleExecEventArgs">
+            <summary>
+            oracle 执行参数
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleExecEventArgs.#ctor(Oracle.DataAccess.Client.OracleCommand,System.String,System.String,System.String)">
+            <summary>
+            构造方法
+            </summary>
+            <param name="command">OracleCommand</param>
+            <param name="macAddress">MAC地址</param>
+            <param name="appCode">应用代码</param>
+            <param name="dbName">数据库用户</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleExecEventArgs.#ctor(Oracle.DataAccess.Client.OracleCommand,System.String,System.Int32)">
+            <summary>
+            构造方法
+            </summary>
+            <param name="command">OracleCommand</param>
+            <param name="ip">IP</param>
+            <param name="port">端口</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleExecEventArgs.#ctor(Lenovo.HIS.Entities.EntityCallInf)">
+            <summary>
+            构造方法
+            </summary>
+            <param name="_wcfInf">调用信息</param>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.OracleExecEventArgs.Command">
+            <summary>
+            数据库OracleCommand
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.OracleExecEventArgs.MACAddress">
+            <summary>
+            MAC地址
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.OracleExecEventArgs.AppCode">
+            <summary>
+            应用地址
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.OracleExecEventArgs.DBName">
+            <summary>
+            数据库链接
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.OracleExecEventArgs.IP">
+            <summary>
+            IP地址
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.OracleExecEventArgs.Port">
+            <summary>
+            端口
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.OracleExecEventArgs._wcfInf">
+            <summary>
+            wcf调用信息
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.DbHelp">
+            <summary>
+            公共数据库交互类
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.DbHelp.m_DbType">
+            <summary>
+            0 thrift 1 dbconnect
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.IDBHelp">
+            <summary>
+            数据库访问方法接口
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecuteScalar(System.String)">
+            <summary>
+            执行命令对象的SQL语句、存储过程
+            如果SQL语句是SELECT查询，则仅仅返回查询结果集中的第1行第1列，而忽略其他的行 和列。
+            如果SQL语句不是SELECT查询，也可以执行成功，返回null
+            </summary>
+            <param name="_StrSql">要执行的sql语句</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecuteScalar(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行命令对象的SQL语句、存储过程
+            如果SQL语句是SELECT查询，则仅仅返回查询结果集中的第1行第1列，而忽略其他的行 和列。
+            如果SQL语句不是SELECT查询，也可以执行成功，返回null
+            </summary>
+            <param name="_StrSql">要执行的sql语句</param>
+            <param name="_Parm">参数</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecuteScalar(System.String,System.Data.Common.DbParameter[],System.Data.CommandType)">
+            <summary>
+            执行命令对象的SQL语句、存储过程
+            如果SQL语句是SELECT查询，则仅仅返回查询结果集中的第1行第1列，而忽略其他的行 和列。
+            如果SQL语句不是SELECT查询，也可以执行成功，返回null
+            </summary>
+            <param name="_StrSql">要执行的sql语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.Exists(System.String)">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.Exists(System.String,System.Text.StringBuilder)">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.Exists(System.String,System.Data.IDbDataParameter[])">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.Exists(System.String,System.Data.IDbDataParameter[],System.Text.StringBuilder)">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.Query(System.String)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.Query(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.Query(System.String,System.Data.Common.DbParameter[],System.Data.CommandType)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">语句类型：SQL语句、存储过程、表名</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.QueryTimeout(System.String,System.Int32)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.QueryTimeout(System.String,System.Data.Common.DbParameter[],System.Int32)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.QueryTimeout(System.String,System.Data.Common.DbParameter[],System.Data.CommandType,System.Int32)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">语句类型：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.QueryTimeout(System.String,System.Data.Common.DbParameter[],System.Data.CommandType,System.Int32,System.Boolean)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">语句类型：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <param name="_BindByName">如果执行存储过程，参数形式时名称是否匹配</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecuteSql(System.String)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecuteSql(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecuteSql(System.String,System.Data.Common.DbParameter[],System.Data.CommandType)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">语句类型：SQL语句、存储过程、表名</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecuteSqlTimeout(System.String,System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecuteSqlTimeout(System.String,System.Data.Common.DbParameter[],System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecuteSqlTimeout(System.String,System.Data.Common.DbParameter[],System.Data.CommandType,System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">语句类型：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecSqlTran(System.Collections.Generic.List{System.String})">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecSqlTran(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]})">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecSqlTran(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType})">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_ListCmdType">语句类型列表：SQL语句、存储过程、表名</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecSqlTranTimeout(System.Collections.Generic.List{System.String},System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecSqlTranTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecSqlTranTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType},System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_ListCmdType">语句类型列表：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecSqlTranManyDB(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]})">
+            <summary>
+            跨数据库事务
+            </summary>
+            <param name="_ListSql">sql列表</param>
+            <param name="_ListPar">参数列表</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecSqlTranManyDB(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType})">
+            <summary>
+            跨数据库事务
+            </summary>
+            <param name="_ListSql">sql列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_ListCmdType">sql类型列表</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecSqlTranManyDBTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Int32)">
+            <summary>
+            跨数据库事务
+            </summary>
+            <param name="_ListSql">sql列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_Times">超时时间</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecSqlTranManyDBTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType},System.Int32)">
+            <summary>
+            跨数据库事务
+            </summary>
+            <param name="_ListSql">sql列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_ListCmdType">sql类型列表</param>
+            <param name="_Times">超时时间</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.RunProcedure(System.String)">
+            <summary>
+            执行存储过程 返回dataset
+            </summary>
+            <param name="_StoredProcSql">SQL语句</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.GetSingle(System.String)">
+            <summary>
+            执行一条计算查询结果语句，返回查询结果（object）。
+            </summary>
+            <param name="_StrSql">计算查询结果语句</param>
+            <returns>查询结果（object）</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.BatchInsert(System.Data.DataTable,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            批量插入数据
+            </summary>
+            <param name="_dTable">要保存的数据</param>
+            <param name="_tbName">数据库表名</param>
+            <param name="_listDbColumnName">数据库列名列表，必须和_dTable列数相同</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IDBHelp.ExecCrossDBSqlListWithTran(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Func{System.String,System.Int32,System.Boolean}})">
+            <summary>
+            跨数据库事务执行,用户可控制是否回滚
+            </summary>
+            <param name="sqlList">待执行sql语句列表</param>
+            <param name="databases">每条语句对应数据库</param>
+            <param name="userActions">用户自定义操作，关系到整个事务是否回滚</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FunConfig">
+            <summary>
+            管理服务端配置信息
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FunConfig.GetConfig(Lenovo.HIS.Entities.EnumConfigType,System.Boolean,System.String,System.String,System.String,System.String,System.String,Lenovo.HIS.Entities.EnumConfigValueType,System.String,System.Int32,System.Int32,System.String,System.String,System.Int32)">
+            <summary>
+            获取配置值
+            </summary>
+            <param name="configType">配置类型</param>
+            <param name="spanApp">是否跨应用，跨应用：多个应用公用一个配置，不跨应用：每个应用对应一个配置</param>
+            <param name="AppCode">如果跨应用不传应用代码，否则必须传应用代码</param>
+            <param name="groupName">分类名称</param>
+            <param name="name">配置名称</param>
+            <param name="defaultValue">当没有配置时默认值</param>
+            <param name="remark">备注</param>
+            <param name="valueType">值类别</param>
+            <param name="Items">值可选项，用'|'分隔，值类别 StrDrop 时需要,</param>
+            <param name="ClientID">客户端ID，如果获取单机配置需要传</param>
+            <param name="UserID">用户ID，如果获取个人配置需要传</param>
+            <param name="UserNumber">用户工号，如果获取单机配置需要传</param>
+            <param name="UserName">用户姓名，如果获取单机配置需要传客户端ID</param>
+            <param name="OperatorUserID">操作人工号，可以不传</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FunConfig.GetConfigGlobal(Lenovo.HIS.Entities.EntityConfig)">
+            <summary>
+            SYS_CONFIG_GLOBAL SYS_CONFIG_MACHINE  SYS_CONFIG_PERSONAL
+            </summary>
+            <param name="config">配置信息</param>
+            <returns>SQL语句</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FunConfig.GetConfigMachine(Lenovo.HIS.Entities.EntityConfig)">
+            <summary>
+            SYS_CONFIG_GLOBAL SYS_CONFIG_MACHINE  SYS_CONFIG_PERSONAL
+            </summary>
+            <param name="config">配置信息</param>
+            <returns>SQL语句</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FunConfig.GetConfigPersonal(Lenovo.HIS.Entities.EntityConfig)">
+            <summary>
+            SYS_CONFIG_GLOBAL SYS_CONFIG_MACHINE  SYS_CONFIG_PERSONAL
+            </summary>
+            <param name="config">配置信息</param>
+            <returns>SQL语句</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FunConfig.InsertConfigGlobal(Lenovo.HIS.Entities.EntityConfig)">
+            <summary>
+            插入全局配置
+            </summary>
+            <param name="config">配置信息</param>
+            <returns>SQL语句</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FunConfig.InsertConfigMachine(Lenovo.HIS.Entities.EntityConfig)">
+            <summary>
+            插入单机配置
+            </summary>
+            <param name="config">配置信息</param>
+            <returns>SQL语句</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FunConfig.InsertConfigPersonal(Lenovo.HIS.Entities.EntityConfig)">
+            <summary>
+            插入个人配置
+            </summary>
+            <param name="config">配置信息</param>
+            <returns>SQL语句</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncLogHelper">
+            <summary>
+            日志帮助类
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.FuncLogHelper.m_ListLogSetting">
+            <summary>
+            所有配置信息
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncLogHelper.getAllLogSetting(System.Object)">
+            <summary>
+            获取日志设置信息
+            说明：该方法比较耗时，需要异步执行
+                  每个客户端ID+应用代码的数据存成一个key，这样每个key最多17条数据
+            </summary>
+            <param name="obj">The object.</param>
+            <example>
+              <code>
+            </code>
+             </example>
+            <exception cref="T:System.Exception">
+            </exception>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncLogHelper.getLogstDefs">
+            <summary>
+            获取设置默认值并写入Redis
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncLogHelper.getAllDefaultSetting(System.Collections.Generic.List{Lenovo.HIS.Entities.EntityLogSetting},System.Int32,System.String,System.Collections.Generic.List{Lenovo.HIS.Entities.EntityLogSetting})">
+            <summary>
+            设置默认值
+            </summary>
+            <param name="lst">设置列表</param>
+            <param name="clientID">客户端ID</param>
+            <param name="appCode">应用代码</param>
+            <param name="listDef">默认配置列表</param>
+            <returns>默认设置集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncLogHelper.getLogSetting(System.Int32,System.String)">
+            <summary>
+            获取设置信息
+            </summary>
+            <param name="clientID">客户端ID</param>
+            <param name="appCode">应用代码</param>
+            <returns>设置信息集合</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncParHelper">
+            <summary>
+            参数帮助类
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncParHelper.GetOracleParameter">
+            <summary>
+            获取Oracle参数
+            </summary>
+            <returns>Oracle参数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncParHelper.GetOracleParameter(System.String,Oracle.DataAccess.Client.OracleDbType)">
+            <summary>
+            获取Oracle参数
+            </summary>
+            <param name="parameterName">参数名称</param>
+            <param name="oraType">参数类型</param>
+            <returns>Oracle参数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncParHelper.GetOracleParameter(System.String,System.Object)">
+            <summary>
+            获取Oracle参数
+            </summary>
+            <param name="parameterName">参数名称</param>
+            <param name="obj"></param>
+            <returns>Oracle参数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncParHelper.GetOracleParameter(System.String,Oracle.DataAccess.Client.OracleDbType,System.Data.ParameterDirection)">
+            <summary>
+            获取Oracle参数
+            </summary>
+            <param name="parameterName">参数名称</param>
+            <param name="oraType">参数类型</param>
+            <param name="direction">入出参类型</param>
+            <returns>Oracle参数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncParHelper.GetOracleParameter(System.String,Oracle.DataAccess.Client.OracleDbType,System.Int32)">
+            <summary>
+            获取Oracle参数
+            </summary>
+            <param name="parameterName">参数名称</param>
+            <param name="oraType">参数类型</param>
+            <param name="size">大小</param>
+            <returns>Oracle参数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncParHelper.GetOracleParameter(System.String,Oracle.DataAccess.Client.OracleDbType,System.Object,System.Data.ParameterDirection)">
+            <summary>
+            获取Oracle参数
+            </summary>
+            <param name="parameterName">参数名称</param>
+            <param name="oraType">参数类型</param>
+            <param name="direction">入出参类型</param>
+            <param name="obj"></param>
+            <returns>Oracle参数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncParHelper.GetOracleParameter(System.String,Oracle.DataAccess.Client.OracleDbType,System.Int32,System.String)">
+            <summary>
+            获取Oracle参数
+            </summary>
+            <param name="parameterName">参数名称</param>
+            <param name="oraType">参数类型</param>
+            <param name="size">大小</param>
+            <param name="srcColumn"></param>
+            <returns>Oracle参数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncParHelper.GetOracleParameter(System.String,Oracle.DataAccess.Client.OracleDbType,System.Int32,System.Object,System.Data.ParameterDirection)">
+            <summary>
+            获取Oracle参数
+            </summary>
+            <param name="parameterName">参数名称</param>
+            <param name="oraType">参数类型</param>
+            <param name="size">大小</param>
+            <param name="direction">入出参类型</param>
+            <param name="obj"></param>
+            <returns>Oracle参数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncParHelper.GetOracleParameter(System.String,Oracle.DataAccess.Client.OracleDbType,System.Int32,System.Data.ParameterDirection,System.Boolean,System.Byte,System.Byte,System.String,System.Data.DataRowVersion,System.Object)">
+            <summary>
+            获取Oracle参数
+            </summary>
+            <param name="parameterName">参数名称</param>
+            <param name="oraType">参数类型</param>
+            <param name="size">大小</param>
+            <param name="direction">入出参类型</param>
+            <param name="isNullable"></param>
+            <param name="precision"></param>
+            <param name="scale"></param>
+            <param name="srcColumn"></param>
+            <param name="srcVersion"></param>
+            <param name="obj"></param>
+            <returns>Oracle参数</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncEndpoint">
+            <summary>
+            获取终结点
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncEndpoint.GetRequestWcfAddress">
+            <summary>
+            获取wcf address 
+            </summary>
+            <returns>地址</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncEndpoint.GetRequestMethodName">
+            <summary>
+            获取访问方法
+            </summary>
+            <returns>方法名</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncEndpoint.GetRequestPort">
+            <summary>
+            获取wcf 端口
+            </summary>
+            <returns>端口号</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncEndpoint.GetRequestClientMACAddress">
+            <summary>
+            获取客户端ID
+            </summary>
+            <returns>端口ID</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncEndpoint.GetRequestClientIP">
+            <summary>
+            获取客户端IP
+            </summary>
+            <returns>IP</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncLogSwitch">
+            <summary>
+            序列号处理类
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncLogSwitch.GetAllLogSwitch">
+            <summary>
+            加载当前日志开关配置
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncLogSwitch.AddLogSwitch(Lenovo.HIS.Entities.EntityLogSwitch)">
+            <summary>
+            添加日志开关配置
+            </summary>
+            <param name="ls">日志开关</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncLogSwitch.UpdateLogSwitch(Lenovo.HIS.Entities.EntityLogSwitch)">
+            <summary>
+            修改日志开关配置
+            </summary>
+            <param name="ls">日志开关</param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncSeqence">
+            <summary>
+            序列号处理类
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncSeqence.GetSquence(Lenovo.HIS.Entities.EnumSequencecs,System.String,System.String,System.String,System.String)">
+            <summary>
+            服务端获取种子，最好加英文字符防止拼音重复，
+            生成的种子为AUTO_+ Enumseq + "_" + _seq.TypeName（拼音）+ "_" + _seq.Desc(拼音);
+            </summary>
+            <param name="Enumseq">类型 Apply,InPatient为CIS库 Medicine，OutPatient为HIS库 </param>
+            <param name="typeName">分类名称</param>
+            <param name="desc">描述名称</param>
+            <param name="tableName">表名</param>
+            <param name="columnName">列名</param>
+            <returns>Sequence值</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncSeqence.GetSquenceList(Lenovo.HIS.Entities.EnumSequencecs,System.String,System.String,System.String,System.String,System.Int32)">
+            <summary>
+            服务端获取种子，最好加英文字符防止拼音重复，
+            生成的种子为AUTO_+ Enumseq + "_" + _seq.TypeName（拼音）+ "_" + _seq.Desc(拼音);
+            </summary>
+            <param name="Enumseq">类型 Apply,InPatient为CIS库 Medicine，OutPatient为HIS库 </param>
+            <param name="typeName">分类名称</param>
+            <param name="desc">描述名称</param>
+            <param name="tableName">表名</param>
+            <param name="columnName">列名</param>
+            <param name="count">数量</param>
+            <returns>Sequence值列表</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncWebApiAuthorition">
+            <summary>
+            WebApi权限获取，获取到的信息存入Redis
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncWebApiAuthorition.getWebApiAutho(System.Object)">
+            <summary>
+            获取接口权限设置信息
+            </summary>
+            <param name="obj">暂未用</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncWebApiAuthorition.getUserAuthos(System.String)">
+            <summary>
+            获取应用的权限列表
+            </summary>
+            <param name="appCode">应用代码</param>
+            <returns>权限列表</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncWebApiAuthorition.getUser(System.String)">
+            <summary>
+            获取应用的权限
+            </summary>
+            <param name="appCode">应用代码</param>
+            <returns>webapi用户</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.Log4Helper">
+            <summary>
+            log4帮助类
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.Log4Helper.Write">
+            <summary>
+            写日志接口
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Error(System.Object)">
+            <summary>
+            记录错误日志
+            </summary>
+            <param name="message">信息</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Error(System.Object,System.String)">
+            <summary>
+            记录错误日志
+            </summary>
+            <param name="message">信息</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Error(System.Object,System.Exception)">
+            <summary>
+            记录错误日志
+            </summary>
+            <param name="message">信息</param>
+            <param name="ex">异常信息</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Error(System.Object,System.Exception,System.String)">
+            <summary>
+            记录错误日志
+            </summary>
+            <param name="message">信息</param>
+            <param name="ex">错误信息</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.ErrorFormat(System.String,System.Object[])">
+            <summary>
+            记录错误日志
+            </summary>
+            <param name="format">格式</param>
+            <param name="args">参数数组</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.ErrorOther(System.Object)">
+            <summary>
+            记录错误时产生的错误
+            </summary>
+            <param name="message">内容</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.ErrorOther(System.Object,System.String,System.String)">
+            <summary>
+            记录错误日志
+            </summary>
+            <param name="message">内容</param>
+            <param name="logFile">文件名</param>
+            <param name="folderName">文件夹名</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Debug(System.Object)">
+            <summary>
+            debug日志
+            </summary>
+            <param name="message">信息</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Debug(System.Object,System.String)">
+            <summary>
+            debug日志
+            </summary>
+            <param name="message">信息</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Debug(System.Object,System.Exception)">
+            <summary>
+            debug日志
+            </summary>
+            <param name="message">信息</param>
+            <param name="ex">异常</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Debug(System.Object,System.Exception,System.String)">
+            <summary>
+            debug日志带错误信息
+            </summary>
+            <param name="message">记录消息</param>
+            <param name="ex">错误信息</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.DebugFormat(System.String,System.Object[])">
+            <summary>
+            debug日志
+            </summary>
+            <param name="format">格式</param>
+            <param name="args">参数数组</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Fatal(System.Object)">
+            <summary>
+            致命错误
+            </summary>
+            <param name="message">信息</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Fatal(System.Object,System.String)">
+            <summary>
+            致命错误
+            </summary>
+            <param name="message">信息</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Fatal(System.Object,System.Exception)">
+            <summary>
+            致命错误
+            </summary>
+            <param name="message">信息</param>
+            <param name="ex">异常</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Fatal(System.Object,System.Exception,System.String)">
+            <summary>
+            致命错误
+            </summary>
+            <param name="message">信息</param>
+            <param name="ex">异常</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.FatalFormat(System.String,System.Object[])">
+            <summary>
+            致命错误
+            </summary>
+            <param name="format">格式</param>
+            <param name="args">参数数组</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Info(System.Object)">
+            <summary>
+            记录日志信息
+            </summary>
+            <param name="message">信息</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Info(System.Object,System.String)">
+            <summary>
+            记录日志信息
+            </summary>
+            <param name="message">信息</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Info(System.Object,System.Exception)">
+            <summary>
+            记录日志信息
+            </summary>
+            <param name="message">信息</param>
+            <param name="ex">异常</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Info(System.Object,System.Exception,System.String)">
+            <summary>
+            记录日志信息
+            </summary>
+            <param name="message">信息</param>
+            <param name="ex">异常</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.InfoFormat(System.String,System.Object[])">
+            <summary>
+            记录日志信息
+            </summary>
+            <param name="format">格式</param>
+            <param name="args">参数数组</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.InfoOther(System.Object)">
+            <summary>
+            记录日志信息（只记本地）
+            </summary>
+            <param name="message">信息</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.InfoOther(System.Object,System.String)">
+            <summary>
+            记录日志信息（只记本地）
+            </summary>
+            <param name="message">信息</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.InfoOther(System.Object,System.String,System.String)">
+            <summary>
+            记录错误日志
+            </summary>
+            <param name="message">内容</param>
+            <param name="logFile">文件名</param>
+            <param name="folderName">文件夹名</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Warn(System.Object)">
+            <summary>
+            记录警告日志
+            </summary>
+            <param name="message">信息</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Warn(System.Object,System.String)">
+            <summary>
+            记录警告日志
+            </summary>
+            <param name="message">信息</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Warn(System.Object,System.Exception)">
+            <summary>
+            记录警告日志
+            </summary>
+            <param name="message">信息</param>
+            <param name="ex">异常</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.Warn(System.Object,System.Exception,System.String)">
+            <summary>
+            记录警告日志
+            </summary>
+            <param name="message">信息</param>
+            <param name="ex">异常</param>
+            <param name="folderName">文件夹名字（LogsRecord下的文件夹名称）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.WarnFormat(System.String,System.Object[])">
+            <summary>
+            记录警告日志
+            </summary>
+            <param name="format">格式</param>
+            <param name="args">参数数组</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.LogWriterDb(Lenovo.HIS.Entities.EnumLogSmallType,System.Object)">
+            <summary>
+            日志记录数据库
+            </summary>
+            <param name="logtype">日志类型</param>
+            <param name="message">内容</param>
+            <returns>是否需要记录本地   true需要  false不需要</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.Log4Helper.SaveLogInfo(System.Object)">
+            <summary>
+            保存日志
+            </summary>
+            <param name="obj">内容</param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.OracleHelper">
+            <summary>
+            oracle帮助类
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.OracleHelper.m_DBname">
+            <summary>
+            数据库名
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.#ctor(System.String)">
+            <summary>
+            构造
+            </summary>
+            <param name="dbName">数据库链接配置名称</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.#ctor(System.String,System.String)">
+            <summary>
+            构造
+            </summary>
+            <param name="dbName">数据库链接配置名称</param>
+            <param name="conString">链接字符串</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecuteScalar(System.String)">
+            <summary>
+            执行命令对象的SQL语句、存储过程
+            如果SQL语句是SELECT查询，则仅仅返回查询结果集中的第1行第1列，而忽略其他的行 和列。
+            如果SQL语句不是SELECT查询，也可以执行成功，返回null
+            </summary>
+            <param name="_StrSql">要执行的sql语句</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecuteScalar(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行命令对象的SQL语句、存储过程
+            如果SQL语句是SELECT查询，则仅仅返回查询结果集中的第1行第1列，而忽略其他的行 和列。
+            如果SQL语句不是SELECT查询，也可以执行成功，返回null
+            </summary>
+            <param name="_StrSql">要执行的sql语句</param>
+            <param name="_Parm">参数</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecuteScalar(System.String,System.Data.Common.DbParameter[],System.Data.CommandType)">
+            <summary>
+            执行命令对象的SQL语句、存储过程
+            如果SQL语句是SELECT查询，则仅仅返回查询结果集中的第1行第1列，而忽略其他的行 和列。
+            如果SQL语句不是SELECT查询，也可以执行成功，返回null
+            </summary>
+            <param name="_StrSql">要执行的sql语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.Exists(System.String)">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.Exists(System.String,System.Text.StringBuilder)">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.Exists(System.String,System.Data.IDbDataParameter[])">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.Exists(System.String,System.Data.IDbDataParameter[],System.Text.StringBuilder)">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.Query(System.String)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.Query(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.Query(System.String,System.Data.Common.DbParameter[],System.Data.CommandType)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.QueryTimeout(System.String,System.Int32)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.QueryTimeout(System.String,System.Data.Common.DbParameter[],System.Int32)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.QueryTimeout(System.String,System.Data.Common.DbParameter[],System.Data.CommandType,System.Int32)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.QueryTimeout(System.String,System.Data.Common.DbParameter[],System.Data.CommandType,System.Int32,System.Boolean)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <param name="_BindByName">如果执行存储过程，参数形式时名称是否匹配</param>
+            <returns>查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecuteSql(System.String)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecuteSql(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecuteSql(System.String,System.Data.Common.DbParameter[],System.Data.CommandType)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecuteSqlTimeout(System.String,System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecuteSqlTimeout(System.String,System.Data.Common.DbParameter[],System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecuteSqlTimeout(System.String,System.Data.Common.DbParameter[],System.Data.CommandType,System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTran(System.Collections.Generic.List{System.String})">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTran(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]})">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTran(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType})">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_ListCmdType">语句类型列表：SQL语句、存储过程、表名</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTranTimeout(System.Collections.Generic.List{System.String},System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTranTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTranTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType},System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_ListCmdType">语句类型列表：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTranManyDB(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]})">
+            <summary>
+            跨数据库事务
+            </summary>
+            <param name="_ListSql">sql列表</param>
+            <param name="_ListPar">参数列表</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTranManyDB(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType})">
+            <summary>
+            跨数据库事务
+            </summary>
+            <param name="_ListSql">sql列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_ListCmdType">sql类型列表</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTranManyDBTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Int32)">
+            <summary>
+            跨数据库事务
+            </summary>
+            <param name="_ListSql">sql列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_Times">超时时间</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTranManyDBTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType},System.Int32)">
+            <summary>
+            跨数据库事务
+            </summary>
+            <param name="_ListSql">sql列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_ListCmdType">sql类型列表</param>
+            <param name="_Times">超时时间</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.GetParametersAll(System.String)">
+            <summary>
+            获取SQL中的所有参数
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>参数数组</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.RunProcedure(System.String)">
+            <summary>
+            执行存储过程
+            </summary>
+            <param name="_StrSql">sql语句</param>
+            <returns>执行结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.RunProcedure(System.String,System.Data.IDbDataParameter[])">
+            <summary>
+            执行存储过程 返回影响行数 
+            </summary>
+            <param name="_StoredProcName">存储过程名称</param>
+            <param name="_Parameters">参数</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.RunProcedure(System.String,System.Data.IDbDataParameter[],System.String)">
+            <summary>
+            执行存储过程 返回DataSet 
+            </summary>
+            <param name="_StoredProcName">存储过程名称</param>
+            <param name="_Parameters">参数</param>
+            <param name="_TableName">表名</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.GetSingle(System.String)">
+            <summary>
+            执行语句 返回
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>第一行第一列值</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTranParam(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.IDbDataParameter[]})">
+            <summary>
+            批量执行带参数的事务
+            </summary>
+            <param name="_SQLStringList">SQL语句列表</param>
+            <param name="param">参数列表</param>
+            <returns>失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSqlTrans(System.Collections.Generic.List{System.Collections.Generic.List{System.String}})">
+            <summary>
+            批量执行事务
+            </summary>
+            <param name="_SQLStringList">SQL列表</param>
+            <returns>第一个-2表示全部失败  第一个不是-2则返回为每个事务执行影响行列表</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.GetParameters(System.String)">
+            <summary>
+            获取存储过程参数
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>object[]</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ModifyData(System.String,System.Data.IDbDataParameter[])">
+            <summary>
+            执行修改或者插入语句 带参数
+            </summary>
+            <param name="sql">SQL语句</param>
+            <param name="para">参数数组</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecCrossDBSqlListWithTran(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Func{System.String,System.Int32,System.Boolean}})">
+            <summary>
+            跨数据库事务执行,用户可控制是否回滚
+            </summary>
+            <param name="sqlList">待执行sql语句列表</param>
+            <param name="databases">每条语句对应数据库</param>
+            <param name="userActions">用户自定义操作，关系到整个事务是否回滚</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.ExecSameDBSqlListWithTran(System.Collections.Generic.List{System.String},System.String,System.Collections.Generic.List{System.Func{System.String,System.Int32,System.Boolean}})">
+            <summary>
+            同数据库事务执行，用户可控制是否回滚
+            </summary>
+            <param name="sqlList">执行语句列表</param>
+            <param name="database">数据库名</param>
+            <param name="userActions">用户自定义操作，关系到整个事务是否回滚</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.OracleHelper.BatchInsert(System.Data.DataTable,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            批量插入数据
+            </summary>
+            <param name="_dTable">要保存的数据</param>
+            <param name="_tbName">数据库表名</param>
+            <param name="_listDbColumnName">数据库列名列表，必须和_dTable列数相同</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.SQLServerHelper">
+            <summary>
+            sql server 帮助类
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SQLServerHelper.m_DBname">
+            <summary>
+            数据库名
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.#ctor(System.String)">
+            <summary>
+            构造 <see cref="T:Lenovo.HIS.sUtils.SQLServerHelper"/> class.
+            </summary>
+            <param name="dbName">链接字符串名字</param>
+            <example>
+              <code>
+            </code>
+             </example>
+            <exception cref="T:System.Exception">
+            </exception>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteScalar(System.String)">
+            <summary>
+            执行命令对象的SQL语句，
+            如果SQL语句是SELECT查询，则仅仅返回查询结果集中的第1行第1列，而忽略其他的行 和列。
+            如果SQL语句不是SELECT查询，也可以执行成功，返回null
+            </summary>
+            <param name="_StrSql">要执行的sql语句</param>
+            <returns>值</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteScalar(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行命令对象的SQL语句，
+            如果SQL语句是SELECT查询，则仅仅返回查询结果集中的第1行第1列，而忽略其他的行 和列。
+            如果SQL语句不是SELECT查询，也可以执行成功，返回null
+            </summary>
+            <param name="_StrSql">要执行的sql语句</param>
+            <param name="_Parm">参数</param>
+            <returns>值</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteScalar(System.String,System.Data.Common.DbParameter[],System.Data.CommandType)">
+            <summary>
+            执行命令对象的SQL语句，
+            如果SQL语句是SELECT查询，则仅仅返回查询结果集中的第1行第1列，而忽略其他的行 和列。
+            如果SQL语句不是SELECT查询，也可以执行成功，返回null
+            </summary>
+            <param name="_StrSql">要执行的sql语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <returns>值</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Exists(System.String)">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Exists(System.String,System.Text.StringBuilder)">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Exists(System.String,System.Data.IDbDataParameter[])">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Exists(System.String,System.Data.IDbDataParameter[],System.Text.StringBuilder)">
+            <summary>
+            检测记录是否存在(SQL语句方式)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns >是否存在</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Query(System.String)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..',:cur_OUT1,:cur_OUT2,:cur_OUT3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Query(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Query(System.String,System.Data.Common.DbParameter[],System.Data.CommandType)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.QueryTimeout(System.String,System.Int32)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.QueryTimeout(System.String,System.Data.Common.DbParameter[],System.Int32)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.QueryTimeout(System.String,System.Data.Common.DbParameter[],System.Data.CommandType,System.Int32)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.QueryTimeout(System.String,System.Data.Common.DbParameter[],System.Data.CommandType,System.Int32,System.Boolean)">
+            <summary>
+            查询 执行查询语句或带有输出的存储过程
+            1.支持返回多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            2.支持无游标的存储过程，但返回null,例如  Pro:ProName('a'△'b')
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">语句类型：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <param name="_BindByName">如果执行存储过程，参数形式时名称是否匹配</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSql(System.String)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSql(System.String,System.Data.Common.DbParameter[])">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSql(System.String,System.Data.Common.DbParameter[],System.Data.CommandType)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlTimeout(System.String,System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlTimeout(System.String,System.Data.Common.DbParameter[],System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlTimeout(System.String,System.Data.Common.DbParameter[],System.Data.CommandType,System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Parm">参数</param>
+            <param name="_commandType">数据类型：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTran(System.Collections.Generic.List{System.String})">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTran(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]})">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTran(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType})">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_ListCmdType">语句类型列表：SQL语句、存储过程、表名</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTranTimeout(System.Collections.Generic.List{System.String},System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTranTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTranTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType},System.Int32)">
+            <summary>
+            执行命令语句（sql语句及存储过程）
+            1.支持无游标的存储过程,例如  Pro:ProName('a'△'b')
+            2.支持带多个游标的存储过程，多个游标均已 :sCUR开头，例如  Pro:ProName('p..'△:sCUR1△:sCUR2△:sCUR3)
+            </summary>
+            <param name="_ListSql">SQL语句列表</param>
+            <param name="_ListPar">参数列表</param>
+            <param name="_ListCmdType">语句类型列表：SQL语句、存储过程、表名</param>
+            <param name="_Times">超时时间：等待命令执行的时间（以秒为单位）</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTranManyDB(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]})">
+            <summary>
+            多数据库事务
+            </summary>
+            <param name="_ListSql">sql语句</param>
+            <param name="_ListPar">参数</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTranManyDB(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType})">
+            <summary>
+            多数据库事务
+            </summary>
+            <param name="_ListSql">sql语句</param>
+            <param name="_ListPar">参数</param>
+            <param name="_ListCmdType">sql类型</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTranManyDBTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Int32)">
+            <summary>
+            多数据库事务
+            </summary>
+            <param name="_ListSql">sql语句</param>
+            <param name="_ListPar">参数</param>
+            <param name="_Times">超时时间</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTranManyDBTimeout(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Data.Common.DbParameter[]},System.Collections.Generic.List{System.Data.CommandType},System.Int32)">
+            <summary>
+            多数据库事务
+            </summary>
+            <param name="_List">sql语句</param>
+            <param name="_ListPar">参数</param>
+            <param name="_ListCmdType">sql类型</param>
+            <param name="_Times">超时时间</param>
+            <returns>成功返回受影响的行数，失败返回-1</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.GetParametersAll(System.String)">
+            <summary>
+            获取SQL中的所有参数
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>参数数组</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Query(System.String,System.Text.StringBuilder)">
+            <summary>
+            执行查询语句，返回DataSet
+            </summary>
+            <param name="_StrSql">查询语句</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Query(System.String,System.Int32)">
+            <summary>
+            (对于长时间查询的语句，设置等待时间避免查询超时)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Times">超时时间</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Query(System.String,System.Int32,System.Text.StringBuilder)">
+            <summary>
+            (对于长时间查询的语句，设置等待时间避免查询超时)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Times">超时时间</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.RunProcedure(System.String)">
+            <summary>
+            执行存储过程
+            </summary>
+            <param name="_StoredProcName">存储过程名称</param>
+            <returns>查询结果DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.GetSingle(System.String)">
+            <summary>
+            执行一条计算查询结果语句，返回查询结果（object）。
+            </summary>
+            <param name="_StrSql">计算查询结果语句</param>
+            <returns>查询结果（object）</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.GetSingle(System.String,System.Text.StringBuilder)">
+            <summary>
+            执行一条计算查询结果语句，返回查询结果（object）。
+            </summary>
+            <param name="_StrSql">计算查询结果语句</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>查询结果（object）</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSql(System.String,System.Text.StringBuilder)">
+            <summary>
+            执行SQL语句，返回影响的记录数
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlList(System.Collections.ArrayList)">
+            <summary>
+            执行多条SQL语句，实现数据库事务。
+            </summary>
+            <param name="_SQLStringList">多条SQL语句</param>     
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlList(System.Collections.ArrayList,System.Text.StringBuilder)">
+            <summary>
+            执行多条SQL语句，实现数据库事务。
+            </summary>
+            <param name="_SQLStringList">多条SQL语句</param>     
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.PrepareCommand(System.Data.SqlClient.SqlCommand,System.Data.SqlClient.SqlConnection,System.Data.SqlClient.SqlTransaction,System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            使用外部传入的SqlTransaction，实现数据库事务
+            </summary>
+            <param name="_Cmd">SqlCommand</param>
+            <param name="_Conn">SqlConnection</param>
+            <param name="_Trans">SqlTransaction</param>
+            <param name="_CmdText">cmdText</param>
+            <param name="_CmdParms">SqlParameter[]</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlList(System.Collections.Generic.List{Lenovo.HIS.sUtils.SqlEntity}@,System.String)">
+            <summary>
+            数据库事务
+            </summary>
+            <param name="_pList">sql列表</param>
+            <param name="_dbName">数据库配置名</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTran(System.Collections.Generic.List{System.String},System.Text.StringBuilder)">
+            <summary>
+            执行多条SQL语句，实现数据库事务。
+            </summary>
+            <param name="_SQLStringList">多条SQL语句</param>	
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlTran(System.String,System.Collections.Generic.List{System.String},System.String,System.Collections.Generic.List{System.String},System.Text.StringBuilder)">
+            <summary>
+            执行2个数据库多条SQL语句，实现多个数据库事务。
+            </summary>
+            <param name="_DBname1">数据库别名1</param>
+            <param name="_SQLStringList1">使用别名1执行的多条语句</param>
+            <param name="_DBname2">数据库别名2</param>
+            <param name="_SQLStringList2">使用别名2执行的多条语句</param>
+            <param name="_ExtendInfo">日志扩展文本</param>
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.GetMaxID(System.String,System.String)">
+            <summary>
+            获取表某个字段的最大值
+            </summary>
+            <param name="FieldName">数据表字段名</param>
+            <param name="TableName">数据表名</param>
+            <returns>数据表传入字段最大值</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.GetMaxID(System.String,System.String,System.Text.StringBuilder)">
+            <summary>
+            获取表某个字段的最大值
+            </summary>
+            <param name="_FieldName">数据表字段名</param>
+            <param name="_TableName">数据表名</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>数据表传入字段最大值</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.BuildDBParameter(Microsoft.Practices.EnterpriseLibrary.Data.Database,System.Data.Common.DbCommand,System.Collections.Generic.List{System.Data.IDbDataParameter})">
+            <summary>
+            添加参数
+            </summary>
+            <param name="_Db">Database</param>
+            <param name="_DbCommand">DbCommand</param>
+            <param name="__CmdParms">参数</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlByTimeout(System.String,System.Int32)">
+            <summary>
+            执行SQL语句，返回影响的记录数(对于长时间查询的语句，设置等待时间避免查询超时)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Times">等待时间</param>
+            <returns>返回影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlByTimeout(System.String,System.Int32,System.Text.StringBuilder)">
+            <summary>
+            执行SQL语句，返回影响的记录数(对于长时间查询的语句，设置等待时间避免查询超时)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Times">等待时间</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>返回影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSql(System.String,System.String)">
+            <summary>
+            执行带一个存储过程参数的的SQL语句。
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Content">参数内容,比如一个字段是格式复杂的文章，有特殊符号，可以通过这个方式添加</param>
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSql(System.String,System.String,System.Text.StringBuilder)">
+            <summary>
+            执行带一个存储过程参数的的SQL语句。
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Content">参数内容,比如一个字段是格式复杂的文章，有特殊符号，可以通过这个方式添加</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlGet(System.String,System.String)">
+            <summary>
+            执行带一个存储过程参数的的SQL语句。
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Content">参数内容,比如一个字段是格式复杂的文章，有特殊符号，可以通过这个方式添加</param>
+            <returns>返回语句里的查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlGet(System.String,System.String,System.Text.StringBuilder)">
+            <summary>
+            执行带一个存储过程参数的的SQL语句。
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Content">参数内容,比如一个字段是格式复杂的文章，有特殊符号，可以通过这个方式添加</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>返回语句里的查询结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlInsertImg(System.String,System.Byte[])">
+            <summary>
+            向数据库里插入图像格式的字段(和上面情况类似的另一种实例)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Fs">图像字节,数据库的字段类型为image的情况</param>
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlInsertImg(System.String,System.Byte[],System.Text.StringBuilder)">
+            <summary>
+            向数据库里插入图像格式的字段(和上面情况类似的另一种实例)
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="_Fs">图像字节,数据库的字段类型为image的情况</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteReader(System.String)">
+            <summary>
+            执行查询语句，返回DbDataReader ( 注意：使用后一定要对DbDataReader进行Close )
+            </summary>
+            <param name="_StrSql">查询语句</param>
+            <returns>IDataReader</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteReader(System.String,System.Text.StringBuilder)">
+            <summary>
+            执行查询语句，返回DbDataReader ( 注意：使用后一定要对DbDataReader进行Close )
+            </summary>
+            <param name="_StrSql">查询语句</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>IDataReader</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.GetParameters(System.String)">
+            <summary>
+            获取存储过程参数
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <returns>object[]</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSql(System.String,System.Collections.Generic.List{System.Data.IDbDataParameter})">
+            <summary>
+            执行SQL语句，返回影响的记录数 语句中实现:SQL参数传入":+参数名",ORACLE参数传入"@+参数名"
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="__CmdParms">参数列表</param>
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSql(System.String,System.Collections.Generic.List{System.Data.IDbDataParameter},System.Text.StringBuilder)">
+            <summary>
+            执行SQL语句，返回影响的记录数 语句中实现:SQL参数传入":+参数名",ORACLE参数传入"@+参数名"
+            </summary>
+            <param name="_StrSql">SQL语句</param>
+            <param name="__CmdParms">参数列表</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>影响的记录数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlHashtable(System.Collections.Hashtable)">
+            <summary>
+            执行多条SQL语句，实现数据库事务。
+            </summary>
+            <param name="_SQLStringList">SQL语句的哈希表（key为sql语句，value是该语句的SqlParameter[]）</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteSqlHashtable(System.Collections.Hashtable,System.Text.StringBuilder)">
+            <summary>
+            执行多条SQL语句，实现数据库事务。
+            </summary>
+            <param name="_SQLStringList">SQL语句的哈希表（key为sql语句，value是该语句的SqlParameter[]）</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.GetSingle(System.String,System.Collections.Generic.List{System.Data.IDbDataParameter})">
+            <summary>
+            执行一条计算查询结果语句，返回查询结果（object）。
+            </summary>
+            <param name="_StrSql">计算查询结果语句</param>
+            <param name="__CmdParms">参数列表</param>
+            <returns>查询结果（object）</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.GetSingle(System.String,System.Collections.Generic.List{System.Data.IDbDataParameter},System.Text.StringBuilder)">
+            <summary>
+            执行一条计算查询结果语句，返回查询结果（object）。
+            </summary>
+            <param name="_StrSql">计算查询结果语句</param>
+            <param name="__CmdParms">参数列表</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>查询结果（object）</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteReader(System.String,System.Collections.Generic.List{System.Data.IDbDataParameter})">
+            <summary>
+            执行查询语句，返回SqlDataReader ( 注意：使用后一定要对SqlDataReader进行Close )
+            </summary>
+            <param name="_StrSql">查询语句</param>
+            <param name="__CmdParms">参数列表</param>
+            <returns>SqlDataReader</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecuteReader(System.String,System.Collections.Generic.List{System.Data.IDbDataParameter},System.Text.StringBuilder)">
+            <summary>
+            执行查询语句，返回SqlDataReader ( 注意：使用后一定要对SqlDataReader进行Close )
+            </summary>
+            <param name="_StrSql">查询语句</param>
+            <param name="__CmdParms">参数列表</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>SqlDataReader</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Query(System.String,System.Collections.Generic.List{System.Data.IDbDataParameter})">
+            <summary>
+            执行查询语句，返回DataSet
+            </summary>
+            <param name="_StrSql">查询语句</param>
+            <param name="_CmdParms">参数</param>
+            <returns>DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.Query(System.String,System.Collections.Generic.List{System.Data.IDbDataParameter},System.Text.StringBuilder)">
+            <summary>
+            执行查询语句，返回DataSet
+            </summary>
+            <param name="_StrSql">查询语句</param>
+            <param name="_CmdParms">参数</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.RunProcedure(System.String,System.Text.StringBuilder)">
+            <summary>
+            执行存储过程，返回影响的行数
+            </summary>
+            <param name="_StoredProcName">存储过程名</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.RunProcedure(System.String,System.Collections.Generic.List{System.Data.IDbDataParameter},System.Data.IDbDataParameter,System.Int32,System.Int32)">
+            <summary>
+            执行存储过程，返回输出参数的值和影响的行数       
+            </summary>
+            <param name="_StoredProcName">存储过程名</param>
+            <param name="_InParameters">存储过程参数</param>
+            <param name="_OutParameter">输出参数名称</param>
+            <param name="_RowsAffected">影响的行数</param>
+            <param name="_OutParameterSize">返回参数数据包大小(字节计算)</param>
+            <returns>object</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.RunProcedure(System.String,System.Collections.Generic.List{System.Data.IDbDataParameter},System.Data.IDbDataParameter,System.Int32,System.Int32,System.Text.StringBuilder)">
+            <summary>
+            执行存储过程，返回输出参数的值和影响的行数       
+            </summary>
+            <param name="_StoredProcName">存储过程名</param>
+            <param name="_InParameters">存储过程参数</param>
+            <param name="_OutParameter">输出参数名称</param>
+            <param name="_RowsAffected">影响的行数</param>
+            <param name="_OutParameterSize">返回参数数据包大小(字节计算)</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>object</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.RunProcedure(System.String,System.Data.IDbDataParameter[])">
+            <summary>
+            执行存储过程，返回SqlDataReader ( 注意：使用后一定要对SqlDataReader进行Close )
+            </summary>
+            <param name="_StoredProcName">存储过程名</param>
+            <param name="_Parameters">存储过程参数</param>
+            <returns>SqlDataReader</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.RunProcedure(System.String,System.Data.IDbDataParameter[],System.Text.StringBuilder)">
+            <summary>
+            执行存储过程，返回SqlDataReader ( 注意：使用后一定要对SqlDataReader进行Close )
+            </summary>
+            <param name="_StoredProcName">存储过程名</param>
+            <param name="_Parameters">存储过程参数</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>SqlDataReader</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.RunProcedure(System.String,System.Data.IDbDataParameter[],System.String)">
+            <summary>
+            执行存储过程，返回DataSet
+            </summary>
+            <param name="_StoredProcName">存储过程名</param>
+            <param name="_Parameters">存储过程参数</param>
+            <param name="_TableName">DataSet结果中的表名</param>
+            <returns>DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.RunProcedure(System.String,System.Data.IDbDataParameter[],System.String,System.Text.StringBuilder)">
+            <summary>
+            执行存储过程，返回DataSet
+            </summary>
+            <param name="_StoredProcName">存储过程名</param>
+            <param name="_Parameters">存储过程参数</param>
+            <param name="_TableName">DataSet结果中的表名</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.RunProcedure(System.String,System.Data.IDbDataParameter[],System.String,System.Int32)">
+            <summary>
+            执行存储过程，返回DataSet(设定等待时间)
+            </summary>
+            <param name="_StoredProcName">storedProcName</param>
+            <param name="_Parameters">IDbDataParameter[]</param>
+            <param name="_TableName">表名</param>
+            <param name="_Times">超时时间</param>
+            <returns>返回影响DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.RunProcedure(System.String,System.Data.IDbDataParameter[],System.String,System.Int32,System.Text.StringBuilder)">
+            <summary>
+            执行存储过程，返回DataSet(设定等待时间)
+            </summary>
+            <param name="_StoredProcName">storedProcName</param>
+            <param name="_Parameters">IDbDataParameter[]</param>
+            <param name="_TableName">表名</param>
+            <param name="_Times">超时时间</param>
+            <param name="_ExtendInfo">扩展消息 长度限制：100字节内</param>
+            <returns>返回影响DataSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.BuildQueryCommand(System.Data.SqlClient.SqlConnection,System.String,System.Data.IDbDataParameter[])">
+            <summary>
+            构建SqlCommand 对象(用来返回一个结果集，而不是一个整数值)
+            </summary>
+            <param name="_Connection">数据库连接</param>
+            <param name="_StoredProcName">存储过程名</param>
+            <param name="_Parameters">存储过程参数</param>
+            <returns>SqlCommand</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.BuildIntCommand(System.Data.SqlClient.SqlConnection,System.String,System.Data.IDbDataParameter[])">
+            <summary>
+            创建SqlCommand 对象实例(用来返回一个整数值)    
+            </summary>
+            <param name="_Connection">SqlConnection</param>
+            <param name="_StoredProcName">存储过程名</param>
+            <param name="_Parameters">存储过程参数</param>
+            <returns>SqlCommand 对象实例</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecSqlList(System.Collections.Generic.List{Lenovo.HIS.sUtils.SqlEntity}@)">
+            <summary>
+            跨数据库执行事务
+            </summary>
+            <param name="_List">Sql信息</param>
+            <returns>成功true失败false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.GetOutputParaVal(Microsoft.Practices.EnterpriseLibrary.Data.Database,System.Data.Common.DbCommand,System.Data.DataSet,System.Collections.Generic.List{System.Data.IDbDataParameter}@)">
+            <summary>
+            添加参数
+            </summary>
+            <param name="_Db">Database</param>
+            <param name="_DbCommand">DbCommand</param>
+            <param name="_Ds"></param>
+            <param name="_CmdParms"> 出参 </param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.SQLServerHelper.SqlCommit">
+            <summary>
+            sql执行后提交之前触发
+            </summary>
+            <param name="e">不包含任何事件数据的 System.EventArgs</param>
+        </member>
+        <member name="E:Lenovo.HIS.sUtils.SQLServerHelper.Sqlcommit">
+            <summary>
+            事件对象
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.BatchInsert(System.Data.DataTable,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            批量插入数据
+            </summary>
+            <param name="_dTable">DataTable数据</param>
+            <param name="_tbName">表名</param>
+            <param name="_listDbColumnName">字段列表</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLServerHelper.ExecCrossDBSqlListWithTran(System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.Func{System.String,System.Int32,System.Boolean}})">
+            <summary>
+            跨数据库事务执行,用户可控制是否回滚
+            </summary>
+            <param name="sqlList">待执行sql语句列表</param>
+            <param name="databases">每条语句对应数据库</param>
+            <param name="userActions">用户自定义操作，关系到整个事务是否回滚</param>
+            <returns>影响行数</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.RedisCacheHelper">
+            <summary>
+            Redis操作帮助类
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.RedisCacheHelper.secondsTimeOut">
+            <summary>
+            默认缓存过期时间,单位秒
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.RedisCacheHelper.InitialDb">
+            <summary>
+            数据库,默认1号
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.RedisCacheHelper.Url">
+            <summary>
+            地址，127.0.0.1:6379
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.RedisCacheHelper.Instance">
+            <summary>
+            单例模式
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetClient">
+            <summary>
+            获取RedisClient
+            </summary>
+            <returns>单实例客户端对象</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.Add``1(System.String,``0,System.Int32)">
+            <summary>
+            添加新缓存
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="t">实体</param>
+            <param name="timeout">超时时间</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.Add``1(System.String,``0,System.TimeSpan)">
+            <summary>
+            添加新缓存
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="t">实体</param>
+            <param name="timeSpan">超时</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.Set``1(System.String,``0,System.Int32)">
+            <summary>
+            设置缓存 用于修改
+            增加缓存异常处理次数
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">缓存建</param>
+            <param name="t">缓存值</param>
+            <param name="timeout">过期时间，单位秒,-1：不过期，0：默认过期时间</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.Set``1(System.String,``0,System.TimeSpan)">
+            <summary>
+            设置缓存
+            增加缓存异常处理 3次
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="t">实体</param>
+            <param name="timeSpan">超时</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.Get``1(System.String)">
+            <summary>
+            获取
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <returns>实体</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetValueByte(System.String)">
+            <summary>
+            根据key,返回byte[]格式
+            </summary>
+            <param name="key">Redis的Key</param>
+            <returns>字节数组</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SetHashIncr(System.String,System.String,System.Int64)">
+             <summary>
+            使某个字段增加
+             </summary>
+             <param name="key">键</param>
+             <param name="field">字段</param>
+             <param name="incre">加值</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.Remove(System.String)">
+            <summary>
+            删除
+            </summary>
+            <param name="key">Redis的Key</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.RemoveItemFromList``1(System.String,``0)">
+            <summary>
+            移除
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="t">实体</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.ListRemoveAll``1(System.String)">
+            <summary>
+            移除全部
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.RemoveAllByKeys(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            移除全部根据key
+            </summary>
+            <param name="keys">keys列表</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.ListCount(System.String)">
+            <summary>
+            获取list的总数量
+            </summary>
+            <param name="key">Redis的Key</param>
+            <returns>数量</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.ListGetRange``1(System.String,System.Int32,System.Int32)">
+            <summary>
+            获取指定范围的
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="start">开始位置</param>
+            <param name="count">数量</param>
+            <returns>实体列表</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetAllList``1(System.String)">
+            <summary>
+            获取全部的
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <returns>实体列表</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.ListGetList``1(System.String,System.Int32,System.Int32)">
+            <summary>
+            分页获取
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="pageIndex">页索引位置</param>
+            <param name="pageSize">页大小</param>
+            <returns>实体列表</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.ListSetExpire(System.String,System.DateTime)">
+            <summary>
+            设置缓存过期
+            </summary>
+            <param name="key">Redis的Key</param>
+            <param name="datetime">超时时间</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SetAdd``1(System.String,``0)">
+            <summary>
+            设置
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="t">实体</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.Contains``1(System.String,``0)">
+            <summary>
+            是否包含
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="t">实体</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SetRemove``1(System.String,``0)">
+            <summary>
+            移除
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="t">实体</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.AddItemToListRight(System.String,System.String)">
+            <summary>
+            向list类型数据添加成员，向列表底部(右侧)添加
+            </summary>
+            <param name="list">列表</param>
+            <param name="item">项</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.AddItemToListLeft(System.String,System.String)">
+            <summary>
+            向list类型数据添加成员，向列表顶部(左侧)添加
+            </summary>
+            <param name="list"></param>
+            <param name="item"></param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetAllItems(System.String)">
+            <summary>
+            从list类型数据读取所有成员
+            </summary>
+            <param name="list">The list.</param>
+            <returns></returns>
+            <example>
+              <code>
+            </code>
+             </example>
+            <exception cref="T:System.Exception">
+            </exception>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetAllKeys">
+            <summary>
+            获取所有key
+            </summary>
+            <returns>key列表</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetItemFromList(System.String,System.Int32)">
+            <summary>
+            从list类型数据指定索引处获取数据，支持正索引和负索引
+            </summary>
+            <param name="list">list类型数据</param>
+            <param name="index">索引</param>
+            <returns>获取到的数据值</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetRangeToList(System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            向列表底部（右侧）批量添加数据
+            </summary>
+            <param name="list">list类型数据</param>
+            <param name="values">值列表</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetItemToSet(System.String,System.String)">
+            <summary>
+            向集合中添加数据
+            </summary>
+            <param name="item">键值</param>
+            <param name="str">添加的内容</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetAllItemsFromSet(System.String)">
+            <summary>
+            获得集合中所有数据
+            </summary>
+            <param name="set">键值</param>
+            <returns>HashSet</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetSetDiff(System.String,System.String[])">
+            <summary>
+            获取fromSet集合和其他集合不同的数据
+            </summary>
+            <param name="fromSet">集合</param>
+            <param name="toSet">集合</param>
+            <returns>不同集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetSetUnion(System.String[])">
+            <summary>
+            获得所有集合的并集
+            </summary>
+            <param name="set">集合数组</param>
+            <returns>集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetSetInter(System.String[])">
+            <summary>
+            获得所有集合的交集
+            </summary>
+            <param name="set">集合数组</param>
+            <returns>集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.AddItemToSortedSet(System.String,System.String,System.Int64)">
+            <summary>
+            向有序集合中添加元素
+            </summary>
+            <param name="set">ID</param>
+            <param name="value">值</param>
+            <param name="score">顺序</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetItemIndexInSortedSetDesc(System.String,System.String)">
+            <summary>
+            获得某个值在有序集合中的排名，按分数的降序排列
+            </summary>
+            <param name="set">ID</param>
+            <param name="value">值</param>
+            <returns>序号</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetItemIndexInSortedSet(System.String,System.String)">
+            <summary>
+            获得某个值在有序集合中的排名，按分数的升序排列
+            </summary>
+            <param name="set">ID</param>
+            <param name="value">值</param>
+            <returns>序号</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetItemScoreInSortedSet(System.String,System.String)">
+            <summary>
+            获得有序集合中某个值得分数
+            </summary>
+            <param name="set">ID</param>
+            <param name="value">值</param>
+            <returns>序号</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetRangeFromSortedSet(System.String,System.Int32,System.Int32)">
+            <summary>
+            获得有序集合中，某个排名范围的所有值
+            </summary>
+            <param name="set">ID</param>
+            <param name="beginRank">开始索引</param>
+            <param name="endRank">截止索引</param>
+            <returns>集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetRangeFromSortedSet(System.String,System.Double,System.Double)">
+            <summary>
+            获得有序集合中，某个分数范围内的所有值，升序
+            </summary>
+            <param name="set">ID</param>
+            <param name="beginScore">开始索引</param>
+            <param name="endScore">截止索引</param>
+            <returns>集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetRangeFromSortedSetDesc(System.String,System.Double,System.Double)">
+            <summary>
+            获得有序集合中，某个分数范围内的所有值，降序
+            </summary>
+            <param name="set">ID</param>
+            <param name="beginScore">开始索引</param>
+            <param name="endScore">截止索引</param>
+            <returns>集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetHashFields(System.String)">
+            <summary>
+            获得某个hash型key下的所有字段
+            </summary>
+            <param name="hashId">ID</param>
+            <returns>集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetHashValues(System.String)">
+            <summary>
+            获得某个hash型key下的所有值
+            </summary>
+            <param name="hashId">ID</param>
+            <returns>集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetHashField(System.String,System.String)">
+            <summary>
+            获得hash型key某个字段的值
+            </summary>
+            <param name="key">Redis的Key</param>
+            <param name="field">字段</param>
+            <returns>值</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SetHashField(System.String,System.String,System.String)">
+            <summary>
+            设置hash型key某个字段的值
+            </summary>
+            <param name="key">Redis的Key</param>
+            <param name="field">字段</param>
+            <param name="value">值</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.HashExist``1(System.String,System.String)">
+            <summary>
+            判断某个数据是否已经被缓存
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="dataKey">key</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.HashSet``1(System.String,System.String,``0)">
+            <summary>
+            存储数据到hash表
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="dataKey">key</param>
+            <param name="t">实体</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.HashRemove(System.String,System.String)">
+            <summary>
+            移除hash中的某值
+            </summary>
+            <param name="key">Redis的Key</param>
+            <param name="dataKey">key</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.HashRemove(System.String)">
+            <summary>
+            移除整个hash
+            </summary>
+            <param name="key">Redis的Key</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.HashGet``1(System.String,System.String)">
+            <summary>
+            从hash表获取数据
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="dataKey">key</param>
+            <returns>数据</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.HashGetAll``1(System.String)">
+            <summary>
+            获取整个hash的数据
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <returns>集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.HashSetExpire(System.String,System.DateTime)">
+            <summary>
+            设置缓存过期
+            </summary>
+            <param name="key">Redis的Key</param>
+            <param name="datetime">失效时间</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SortedSetAdd``1(System.String,``0,System.Double)">
+            <summary>
+             添加数据到 SortedSet
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="t">实体</param>
+            <param name="score"></param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SortedSetRemove``1(System.String,``0)">
+            <summary>
+            移除数据从SortedSet
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="t">实体</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SortedSetTrim(System.String,System.Int32)">
+            <summary>
+            修剪SortedSet
+            </summary>
+            <param name="key">Redis的Key</param>
+            <param name="size">保留的条数</param>
+            <returns>集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SortedSetCount(System.String)">
+            <summary>
+            获取SortedSet的长度
+            </summary>
+            <param name="key">Redis的Key</param>
+            <returns>长度</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SortedSetGetList``1(System.String,System.Int32,System.Int32)">
+            <summary>
+            获取SortedSet的分页数据
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <param name="pageIndex">页索引</param>
+            <param name="pageSize">页大小</param>
+            <returns>集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SortedSetGetListAll``1(System.String)">
+            <summary>
+            获取SortedSet的全部数据
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="key">Redis的Key</param>
+            <returns>有序集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.SortedSetSetExpire(System.String,System.DateTime)">
+            <summary>
+            设置缓存过期
+            </summary>
+            <param name="key">Redis的Key</param>
+            <param name="datetime">失效时间</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.GetList``1(System.String)">
+            <summary>
+            获取链表数据
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="listId">主键集合</param>
+            <returns>链表集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.AddList``1(System.String,System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            IEnumerable数据添加到链表
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="listId">主键集合</param>
+            <param name="values"></param>
+            <param name="timeout">超时时间</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.AddEntityToList``1(System.String,``0,System.Int32)">
+            <summary>
+            添加单个实体到链表中
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="listId">主键集合</param>
+            <param name="item"></param>
+            <param name="timeout">超时时间</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.RemoveEntityFromList``1(System.String,``0)">
+            <summary>
+            在链表中删除单个实体
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="listId">主键集合</param>
+            <param name="t">实体</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.RedisCacheHelper.RemoveEntityFromList``1(System.String,System.Func{``0,System.Boolean})">
+            <summary>
+            根据lambada表达式删除符合条件的实体
+            </summary>
+            <typeparam name="T">类型</typeparam>
+            <param name="listId">主键集合</param>
+            <param name="func"></param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.IncomingMessageLoggerEndpointBehavior">
+            <summary>
+            终结点行为
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IncomingMessageLoggerEndpointBehavior.AddBindingParameters(System.ServiceModel.Description.ServiceEndpoint,System.ServiceModel.Channels.BindingParameterCollection)">
+            <summary>
+            
+            </summary>
+            <param name="endpoint">终结点</param>
+            <param name="bindingParameters"></param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IncomingMessageLoggerEndpointBehavior.ApplyClientBehavior(System.ServiceModel.Description.ServiceEndpoint,System.ServiceModel.Dispatcher.ClientRuntime)">
+            <summary>
+            
+            </summary>
+            <param name="endpoint">终结点</param>
+            <param name="clientRuntime"></param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IncomingMessageLoggerEndpointBehavior.ApplyDispatchBehavior(System.ServiceModel.Description.ServiceEndpoint,System.ServiceModel.Dispatcher.EndpointDispatcher)">
+            <summary>
+            
+            </summary>
+            <param name="endpoint">终结点</param>
+            <param name="endpointDispatcher">终结点分发</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IncomingMessageLoggerEndpointBehavior.Validate(System.ServiceModel.Description.ServiceEndpoint)">
+            <summary>
+            
+            </summary>
+            <param name="endpoint">终结点</param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.IncomingMessageLoggerEndpointBehaviorExtension">
+            <summary>
+            扩展方法，监听服务端方法执行耗时
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.IncomingMessageLoggerEndpointBehaviorExtension.BehaviorType">
+            <summary>
+            终结点行为
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IncomingMessageLoggerEndpointBehaviorExtension.CreateBehavior">
+            <summary>
+            终结点行为
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.IncomingMessageLoggerInspector">
+            <summary>
+            拦截发送前后内容
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IncomingMessageLoggerInspector.AfterReceiveRequest(System.ServiceModel.Channels.Message@,System.ServiceModel.IClientChannel,System.ServiceModel.InstanceContext)">
+            <summary>
+            接受后
+            </summary>
+            <param name="request">请求</param>
+            <param name="channel">请求通道</param>
+            <param name="instanceContext">上下文内容</param>
+            <returns>定时器</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.IncomingMessageLoggerInspector.BeforeSendReply(System.ServiceModel.Channels.Message@,System.Object)">
+            <summary>
+            返回前
+            </summary>
+            <param name="reply">消息</param>
+            <param name="correlationState">内容</param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncPlugin">
+            <summary>
+            插件处理类
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncPlugin.#ctor">
+            <summary>
+            构造
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncPlugin.#ctor(System.Object)">
+            <summary>
+            构造
+            </summary>
+            <param name="_hostclass">宿主类</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncPlugin.GetPlugins(System.Object,System.String)">
+            <summary>
+            初始化class中的指定的eventfunc
+            </summary>
+            <param name="_hostclass">需要初始化的class</param>
+            <param name="_hostevent">需要初始化的委托事件名字，用“,”分隔</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncPlugin.GetPlugins(System.Object)">
+            <summary>
+            初始化class中的所有eventfunc
+            </summary>
+            <param name="_hostclass">宿主类</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncPlugin.ExecDelegate(System.String,System.Object[],System.Collections.Generic.List{System.Object}@)">
+            <summary>
+            执行插件
+            </summary>
+            <param name="_eventname">方法名</param>
+            <param name="_args">参数</param>
+            <param name="returnObjList">返回结果列表</param>
+            <returns>插件返回实体</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncPlugin.CreatePluginInstance(System.String)">
+            <summary>
+            检查插件对象初始化是否成功
+            </summary>
+            <param name="_hostNamespace">命名空间</param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncReflect">
+            <summary>
+            反射dll
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncReflect.DoWork(System.String,System.String,System.String,System.Object[])">
+            <summary>
+            反射执行dll方法，并获取返回值
+            </summary>
+            <param name="psDLLName">DLL名称</param>
+            <param name="psNamespace">名称空间</param>
+            <param name="psWayName">方法名称</param>
+            <param name="Args">参数</param>
+            <returns>返回ArrayList集合</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncReflect.DoMethod(System.String,Lenovo.HIS.Entities.EntityPlugin,System.Object[])">
+            <summary>
+            执行插件方法
+            </summary>
+            <param name="_appPath">路径</param>
+            <param name="_func">插件方法</param>
+            <param name="_args">参数</param>
+            <returns>插件执行结果</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncReflect.DoWork``1(``0)">
+            <summary>
+            反射执行dll方法，并获取返回值
+            </summary>
+            <param name="_t">继承IDoWorkEntity</param>
+            <returns>返回object</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncReflect.CreateInstance(System.String,System.String)">
+            <summary>
+            实例化插件类,放入域中和全局Object集合中
+            </summary>
+            <param name="_dllPath">dll路径</param>
+            <param name="_fullClassName">类名</param>
+            <returns>插件实例</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncReflect.UnLoadDll(Lenovo.HIS.Entities.EntityObject,System.Boolean)">
+            <summary>
+            卸载已装载到内存的dll
+            </summary>
+            <param name="_objentity">实体对象</param>
+            <param name="IsCollect">是否垃圾回收</param>
+            <returns>成功返回true</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncReflect.UnLoadDll(System.Collections.Generic.List{System.Guid},System.Boolean)">
+            <summary>
+            卸载已装载到内存的dll
+            </summary>
+            <param name="_Idlist"></param>
+            <param name="IsCollect">是否垃圾回收</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncReflect.UnLoadDllList(System.Collections.Generic.List{Lenovo.HIS.Entities.EntityObject})">
+            <summary>
+            卸载已装载到内存的dll集合
+            </summary>
+            <param name="_objlist">对象集合</param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.ReflectEntity">
+            <summary>
+            反射实体
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.ReflectEntity.DLLName">
+            <summary>
+            DLL名称
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.ReflectEntity.ClassName">
+            <summary>
+            类名称
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.ReflectEntity.MethodName">
+            <summary>
+            方法名
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.ReflectEntity.Args">
+            <summary>
+            参数
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.IReflectEntity">
+            <summary>
+            反射信息接口实体
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.IReflectEntity.DLLName">
+            <summary>
+            DLL名称
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.IReflectEntity.ClassName">
+            <summary>
+            类名称
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.IReflectEntity.MethodName">
+            <summary>
+            方法名
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.IReflectEntity.Args">
+            <summary>
+            参数
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncException">
+            <summary>
+            模块异常处理
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncException.FgExceptionBind">
+            <summary>
+            绑定程序中的异常处理
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncException.Application_ThreadException(System.Object,System.Threading.ThreadExceptionEventArgs)">
+            <summary>
+            处理UI线程异常
+            </summary>
+            <param name="sender">事件源</param>
+            <param name="e">不包含任何事件数据的 System.EventArgs</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncException.CurrentDomain_UnhandledException(System.Object,System.UnhandledExceptionEventArgs)">
+            <summary>
+            处理未捕获的异常
+            </summary>
+            <param name="sender">事件源</param>
+            <param name="e">不包含任何事件数据的 System.EventArgs</param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.FuncInit">
+            <summary>
+            服务端数据初始化类
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncInit.GetAllDbConnect">
+            <summary>
+            初始化DBconnectEntity
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.FuncInit.GetSequence(System.String,System.String,System.String,System.Int32)">
+            <summary>
+            暂未用
+            </summary>
+            <param name="_DBConn">库名称</param>
+            <param name="_fl">分类名称</param>
+            <param name="_mc">sequence名称</param>
+            <param name="_Num">一次获取的数量 默认1</param>
+            <returns>暂未用</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.BaseConst">
+            <summary>
+            基础常量
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.BaseConst.c_DbBase">
+            <summary>
+            基础数据库别名
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.BaseConst.c_DbCIS">
+            <summary>
+            CIS数据库别名
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.BaseConst.c_DbHIS">
+            <summary>
+            HIS数据库别名
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.BaseConst.SplitChar">
+            <summary>
+            存储过程参数分隔符
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.PubVar">
+            <summary>
+            全局变量
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.PubVar.g_BaseConnect">
+            <summary>
+            基础库链接实例
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.PubVar.g_ListDBConnect">
+            <summary>
+            链接列表
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.PubVar.g_ListEntityObject">
+            <summary>
+            实例化类对象列表，长期使用
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.PubVar.g_SeqList">
+            <summary>
+            seq列表
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.PubVar.g_ListConfig">
+            <summary>
+            缓存配置信息
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.PubVar.g_WcfDt">
+            <summary>
+            缓存WCF配置信息
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.PubVar.AddLog(System.Boolean)">
+            <summary>
+            开启客户端日志
+            </summary>
+            <param name="_bl">是否开启客户端日志 开启true  不开启false</param>
+            <returns>成功返回true 失败返回false</returns>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.PubVar.keyClient">
+            <summary>
+            客户端key
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.PubVar.GetRedisClient">
+            <summary>
+            创建redis实例
+            </summary>
+            <returns>RedisClient实例</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.PubVar.GetCallInf(System.ServiceModel.OperationContext)">
+            <summary>
+            获取调用的相关信息
+            </summary>
+            <param name="opContext"></param>
+            <returns>客户端调用信息</returns>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.PubVar.CheckLogSwitch2(Lenovo.HIS.Entities.EntityCallInf)">
+            <summary>
+            检查是否需要记录日志
+            </summary>
+            <param name="_wcfInf">客户端调用信息</param>
+            <returns>需要true  不需要false</returns>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.EntityLogClient">
+            <summary>
+            日志开启集合
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.EntityLogClient.IP_Adress">
+            <summary>
+            IP地址
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.EntityLogClient.OpenTime">
+            <summary>
+            开启时间
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.EntityLogClient.OpenSign">
+            <summary>
+            开启标志  true 开启 
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.EntityLogClient.WCF">
+            <summary>
+            服务名称 
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.SQLHelper">
+            <summary>
+            数据访问进一步封装类
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SQLHelper.m_DBname">
+            <summary>
+            数据库名
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SQLHelper.m_DBType">
+            <summary>
+            数据库类型
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SQLHelper.m_DBHelp">
+            <summary>
+            数据库连接对象
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLHelper.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="dbName">数据库名</param>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SQLHelper.#ctor(System.String,System.String)">
+            <summary>
+            构造
+            </summary>
+            <param name="_provider">数据库驱动</param>
+            <param name="_conString">链接字符串</param>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.SqlEvent">
+            <summary>
+            跨数据库执行事务
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.SqlEvent.#ctor(System.Int32,System.String,System.Collections.Generic.List{System.Data.IDbDataParameter},System.Int32)">
+            <summary>
+            构造
+            </summary>
+            <param name="_Index"></param>
+            <param name="_Sql">SQL语句</param>
+            <param name="_Paras">参数</param>
+            <param name="_Count"></param>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.SqlEvent.Index">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.SqlEvent.Sql">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.SqlEvent.Paras">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.SqlEvent.Count">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Lenovo.HIS.sUtils.SqlEvent.NeedRollback">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.SqlEntity">
+            <summary>
+            Sql内容实体
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SqlEntity.DbName">
+            <summary>
+            数据库工厂中定义的数据库连接名称
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SqlEntity.sql">
+            <summary>
+            存储过程名或一般语句(select 语句除外)
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SqlEntity.Paras">
+            <summary>
+            存储过程参数
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SqlEntity.count">
+            <summary>
+            insert update delete 所影响的行数
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SqlEntity.ds">
+            <summary>
+            存储过程返回的结果集
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SqlEntity.db">
+            <summary>
+            数据库
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SqlEntity.conn">
+            <summary>
+            链接
+            </summary>
+        </member>
+        <member name="F:Lenovo.HIS.sUtils.SqlEntity.tran">
+            <summary>
+            事务
+            </summary>
+        </member>
+        <member name="T:Lenovo.HIS.sUtils.QueryTime">
+             <summary>
+            记录执行时间
+             </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.QueryTime.#ctor">
+            <summary>
+            默认构造
+            </summary>
+        </member>
+        <member name="M:Lenovo.HIS.sUtils.QueryTime.Calculate">
+            <summary>
+            计算方法执行时间
+            </summary>
+            <returns>耗时秒</returns>
+        </member>
+    </members>
+</doc>
