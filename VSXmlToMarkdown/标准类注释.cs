@@ -29,6 +29,23 @@ namespace VSXmlToMarkdown
         }
 
         /// <summary>
+        ///   <group></group>
+        ///    <obsolete>于XXX被弃用</obsolete>
+        /// </summary>
+        /// <param name="NullCreate"></param>
+        /// <param name="showTab"></param>
+        /// <returns></returns>
+        /// <example>
+        ///    <code>
+        ///    </code>
+        /// </example>
+        /// <exception cref="System.Exception">
+        /// </exception>
+        public int ReadCard(bool NullCreate, int showTab)
+        {
+            return 0;
+        }
+        /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>

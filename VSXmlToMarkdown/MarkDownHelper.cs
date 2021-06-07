@@ -225,7 +225,13 @@ namespace VSXmlToMarkdown
                                 }
                             }
 
-                            builderBody.AppendLine($" | {methodName}({string.Join(",<br />", paras).Trim()}) | {string.Join("", item.Param.Select(s => s.Name + " : " + s.Text.AsString().Trim() + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} | ");
+                            string str = "";
+                            if (paras != null && paras.Count > 0)
+                            {
+                                str = "<br />";
+                            }
+
+                            builderBody.AppendLine($" | {methodName}({str}{string.Join(",<br />", paras).Trim()}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + s.Text.AsString().Trim() + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} | ");
 
                         }
                         catch (Exception ex)
