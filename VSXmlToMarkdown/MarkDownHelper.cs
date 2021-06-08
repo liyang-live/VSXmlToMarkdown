@@ -314,7 +314,7 @@ namespace VSXmlToMarkdown
                         //参数组合
                         string methodFileName = Escape(methodName1.Replace("<T>", "")) + "-" + seque;
                         seque++;
-                        builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodFileName}.md#{methodFileName})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} |");
+                        builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodFileName}.md#{methodName1})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} |");
 
                         //m_UrlList.Add(new SeeasoLink { FileName = $"{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md", Ulr = $"../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")}" });
 
@@ -438,16 +438,19 @@ namespace VSXmlToMarkdown
             builderContentTitle.AppendLine($"**最新版本: v3.0.{DateTime.Now.ToString("MM.dd")} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {DateTime.Now.ToString("yyyy年MM月dd日")}**  ");
             builderContentTitle.AppendLine("<br/>");
             builderContentTitle.AppendLine("#### 说明");//
+            builderContentTitle.AppendLine($" --- ");
             builderContentTitle.AppendLine("```C#");
             builderContentTitle.AppendLine($"{member.Summary.Text.AsString().Trim()}");
             builderContentTitle.AppendLine("```");
             builderContentTitle.AppendLine("");
+            builderContentTitle.AppendLine("<br/>");
 
 
             #region 参数
             //参数
+            builderContentTitle.AppendLine($"  ");
             builderContentTitle.AppendLine($" #### 参数");
-
+            builderContentTitle.AppendLine($" --- ");
             var paras = GetParamTypes(member.Name.AsString());
 
             if (paras != null && paras.Count > 0)
@@ -488,12 +491,14 @@ namespace VSXmlToMarkdown
                 builderContentTitle.AppendLine("`无相关信息`");
             }
             builderContentTitle.AppendLine();
+            builderContentTitle.AppendLine("<br/>");
             #endregion
 
             #region 返回值
             //返回值
+            builderContentTitle.AppendLine($"  ");
             builderContentTitle.AppendLine($" #### 返回值");
-
+            builderContentTitle.AppendLine($" --- ");
             bool _IsReturns = true;
 
             if (member?.Returns?.Text != null)
@@ -505,11 +510,13 @@ namespace VSXmlToMarkdown
             }
             //builderContentTitle.AppendLine("<br/>");
             //builderContentTitle.AppendLine(" ");
-            if ((member?.Returns?.Seealso != null && member?.Returns?.Seealso.Count > 0) || (member?.Returns?.See != null && member?.Returns?.See.Count > 0))
+            if (member?.Returns != null)
             {
-
-                builderContentTitle.AppendLine($"|  名称    |   类型   |   说明   |   参见   |");
-                builderContentTitle.AppendLine($"| ---- | ---- | ---- | ---- |");
+                if (member?.Returns?.Seealso != null || member?.Returns?.See != null)
+                {
+                    builderContentTitle.AppendLine($"|  名称    |   类型   |   说明   |   参见   |");
+                    builderContentTitle.AppendLine($"| ---- | ---- | ---- | ---- |");
+                }
 
                 if (member?.Returns?.Seealso != null)
                 {
@@ -539,14 +546,16 @@ namespace VSXmlToMarkdown
             {
                 builderContentTitle.AppendLine("`无相关信息`");
             }
+            builderContentTitle.AppendLine();
+            builderContentTitle.AppendLine("<br/>");
             #endregion
 
 
             //异常信息
             #region 异常信息
-
+            builderContentTitle.AppendLine($"  ");
             builderContentTitle.AppendLine($" #### 异常信息");
-
+            builderContentTitle.AppendLine($" --- ");
             bool _IsException = true;
 
             if (member?.Exception?.Text != null)
@@ -556,7 +565,7 @@ namespace VSXmlToMarkdown
             }
             builderContentTitle.AppendLine();
 
-            if (member?.Exception != null || member?.Exception?.Seealso != null || member?.Exception?.See != null)
+            if (member?.Exception != null)
             {
 
 
@@ -567,7 +576,7 @@ namespace VSXmlToMarkdown
                 {
                     var _SeeAlso = member?.Exception.Cref == null ? "" : $"参见:[{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(member?.Exception.Cref.AsString().Replace("T:", "")), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString()) + ")";
 
-                    builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(member?.Exception.Cref.AsString().Replace("T:", "")), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString())} |  | {Escape(member?.Exception.Text)} | {_SeeAlso} |");
+                    builderContentTitle.AppendLine($"| [{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(member?.Exception.Cref.AsString().Replace("T:", "")), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString())}) |  | {Escape(member?.Exception.Text)} | {_SeeAlso} |");
                     _IsException = false;
                 }
 
@@ -578,7 +587,7 @@ namespace VSXmlToMarkdown
                     {
                         var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString()) + ")";
 
-                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
+                        builderContentTitle.AppendLine($"| [{Escape(item.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())}) |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsException = false;
                     }
                 }
@@ -589,25 +598,27 @@ namespace VSXmlToMarkdown
                     {
                         var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString()) + ")";
 
-                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
+                        builderContentTitle.AppendLine($"| [{Escape(item.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())}) |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsException = false;
                     }
                 }
 
-                builderContentTitle.AppendLine();
-                builderContentTitle.AppendLine("<br/>");
+                //builderContentTitle.AppendLine();
+                //builderContentTitle.AppendLine("<br/>");
             }
             if (_IsException)
             {
                 builderContentTitle.AppendLine("`无相关信息`");
             }
             builderContentTitle.AppendLine();
+            builderContentTitle.AppendLine("<br/>");
             #endregion
 
 
             //备注
             #region 备注
             builderContentTitle.AppendLine($" #### 备注");
+            builderContentTitle.AppendLine($" --- ");
             bool _IsRemarks = true;
             if (member?.Remarks != null && member?.Remarks.Text != null)
             {
@@ -615,7 +626,7 @@ namespace VSXmlToMarkdown
                 _IsRemarks = false;
             }
 
-            if (member?.Remarks?.Seealso != null || member?.Remarks?.See != null)
+            if (member?.Remarks != null)
             {
 
                 builderContentTitle.AppendLine(" ");
@@ -653,7 +664,9 @@ namespace VSXmlToMarkdown
 
             //示例
             #region 示例
+            builderContentTitle.AppendLine("<br/>");
             builderContentTitle.AppendLine($" #### 示例");
+            builderContentTitle.AppendLine($" --- ");
             bool _IsExample = true;
             if (member?.Example != null && member?.Example.Text != null)
             {
