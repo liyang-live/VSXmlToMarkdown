@@ -204,7 +204,7 @@ namespace VSXmlToMarkdown
                 {
 
                     //构造函数  M:Lenovo.HIS.Common.DataField.#ctor(System.String)
-                    if (item.Name.Contains("#ctor")|| item.Name.Contains("#cctor"))
+                    if (item.Name.Contains("#ctor") || item.Name.Contains("#cctor"))
                     {
                         try
                         {
@@ -254,6 +254,9 @@ namespace VSXmlToMarkdown
 
             builderBody.AppendLine($"|  方法    |   参数   |   说明   |   返回值   |");
             builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
+
+            int seque = 1;
+
             //Field — 方法
             foreach (var item in mesmList)
             {
@@ -261,7 +264,7 @@ namespace VSXmlToMarkdown
                 //M:Lenovo.HIS.Common.FuncAgeHelper.GetAgeByBirthday(System.Nullable{System.DateTime},System.Int32,System.Int32,System.Int32,System.Int32)
                 //M:Lenovo.HIS.Common.FuncDefaultHttpHelper.HttpRequest2(Lenovo.HIS.Common.EnumHttpMethodType2,Lenovo.HIS.Common.EnumContextTypes2,System.Collections.Generic.Dictionary{System.String,System.String},System.Collections.Generic.Dictionary{System.String,System.Object})
                 //方法
-                if (item.Name.Contains("M:") && !(item.Name.Contains("#ctor")|| item.Name.Contains("#cctor")))
+                if (item.Name.Contains("M:") && !(item.Name.Contains("#ctor") || item.Name.Contains("#cctor")))
                 {
                     try
                     {
@@ -309,7 +312,8 @@ namespace VSXmlToMarkdown
                         }
 
                         //参数组合
-                        string methodFileName = Escape(methodName1.Replace("<T>", "&lt;T&gt;")) + Escape(item.Name.Replace("<T>", "&lt;T&gt;")).GetHashCode();
+                        string methodFileName = Escape(methodName1.Replace("<T>", "")) + "-" + seque;
+                        seque++;
                         builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodFileName}.md#{methodFileName})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} |");
 
                         //m_UrlList.Add(new SeeasoLink { FileName = $"{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md", Ulr = $"../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")}" });
@@ -422,7 +426,7 @@ namespace VSXmlToMarkdown
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static void GenerateExample(Member member, string name, string methodName, string assemblyName, string filename,string methodFileName)
+        public static void GenerateExample(Member member, string name, string methodName, string assemblyName, string filename, string methodFileName)
         {
 
             StringBuilder builderContentTitle = new StringBuilder();
