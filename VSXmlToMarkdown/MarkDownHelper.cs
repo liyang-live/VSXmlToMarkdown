@@ -448,7 +448,8 @@ namespace VSXmlToMarkdown
 
             #region 参数
             //参数
-            builderContentTitle.AppendLine($"  ");
+            builderContentTitle.AppendLine();
+            builderContentTitle.AppendLine();
             builderContentTitle.AppendLine($" #### 参数");
             builderContentTitle.AppendLine($" --- ");
             var paras = GetParamTypes(member.Name.AsString());
@@ -496,7 +497,8 @@ namespace VSXmlToMarkdown
 
             #region 返回值
             //返回值
-            builderContentTitle.AppendLine($"  ");
+            builderContentTitle.AppendLine();
+            builderContentTitle.AppendLine();
             builderContentTitle.AppendLine($" #### 返回值");
             builderContentTitle.AppendLine($" --- ");
             bool _IsReturns = true;
@@ -553,7 +555,8 @@ namespace VSXmlToMarkdown
 
             //异常信息
             #region 异常信息
-            builderContentTitle.AppendLine($"  ");
+            builderContentTitle.AppendLine();
+            builderContentTitle.AppendLine();
             builderContentTitle.AppendLine($" #### 异常信息");
             builderContentTitle.AppendLine($" --- ");
             bool _IsException = true;
@@ -617,6 +620,8 @@ namespace VSXmlToMarkdown
 
             //备注
             #region 备注
+            builderContentTitle.AppendLine();
+            builderContentTitle.AppendLine();
             builderContentTitle.AppendLine($" #### 备注");
             builderContentTitle.AppendLine($" --- ");
             bool _IsRemarks = true;
@@ -665,6 +670,8 @@ namespace VSXmlToMarkdown
             //示例
             #region 示例
             builderContentTitle.AppendLine("<br/>");
+            builderContentTitle.AppendLine();
+            builderContentTitle.AppendLine();
             builderContentTitle.AppendLine($" #### 示例");
             builderContentTitle.AppendLine($" --- ");
             bool _IsExample = true;
