@@ -472,7 +472,7 @@ namespace VSXmlToMarkdown
                             var _SeeAlso = member?.Param[i]?.Seealso?.Cref == null ? "" : $"参见:[{Escape(member?.Param[i]?.Seealso?.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(member?.Param[i]?.Seealso?.Cref, member?.Param[i]?.Seealso?.Cref.AsString(), member?.Param[i]?.Seealso?.Cref.AsString()) + ")";
 
                             builderContentTitle.AppendLine($" | {member.Param[i].Name.Trim()}" +
-                                $"| {paras[i]} | {ConvertToMarkdown(member.Param[i].Text.Trim()).Replace("{", "&lt;").Replace("}", "&gt;")} " +
+                                $"| [{paras[i]}]({GetTypeUrl(paras[i], paras[i], paras[i])}) | {ConvertToMarkdown(member.Param[i].Text.Trim()).Replace("{", "&lt;").Replace("}", "&gt;")} " +
                                 $"| {member?.Param[i]?.Seealso?.Text}{_SeeAlso} | ");
                         }
                         else
@@ -480,7 +480,7 @@ namespace VSXmlToMarkdown
                             var _SeeAlso = member?.Param[i]?.See?.Cref == null ? "" : $"参见:[{Escape(member?.Param[i]?.See?.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(member?.Param[i]?.See?.Cref, member?.Param[i]?.See?.Cref.AsString(), member?.Param[i]?.See?.Cref.AsString()) + ")";
 
                             builderContentTitle.AppendLine($" | {member.Param[i].Name.Trim()}" +
-                            $"| {paras[i]} | {ConvertToMarkdown(member.Param[i].Text.AsString().Trim()).Replace("{", "&lt;").Replace("}", "&gt;")} " +
+                            $"| [{paras[i]}]({GetTypeUrl(paras[i], paras[i], paras[i])}) | {ConvertToMarkdown(member.Param[i].Text.AsString().Trim()).Replace("{", "&lt;").Replace("}", "&gt;")} " +
                             $"| {member?.Param[i]?.See?.Text}<br/>{_SeeAlso} | ");
                         }
                     }
