@@ -78,6 +78,12 @@ namespace VSXmlToMarkdown
                     string obsoleteText = ""; //弃用
                     string group = "";                    //组
                     string intr = "";//介绍
+                    string appliesto = "";//适用版本
+                    string NameSpace = "";//命名空间
+                    string assembly = "";//程序集
+                    string version = "";//版本号
+                    string Class = "";//类
+
                     if (item.Summary != null && item.Summary.Text != null)
                     {
                         intr = string.Join(",", item.Summary.Text);
@@ -90,6 +96,26 @@ namespace VSXmlToMarkdown
                         if (item.Summary.Group.AsString() != "")
                         {
                             group = item.Summary.Group.AsString();
+                        }
+                        if (item.Summary.AppliesTo.AsString() != "")
+                        {
+                            appliesto = item.Summary.AppliesTo.AsString();
+                        }
+                        if (item.Summary.NameSpace.AsString() != "")
+                        {
+                            NameSpace = item.Summary.NameSpace.AsString();
+                        }
+                        if (item.Summary.Assembly.AsString() != "")
+                        {
+                            assembly = item.Summary.Assembly.AsString();
+                        }
+                        if (item.Summary.Class.AsString() != "")
+                        {
+                            Class = item.Summary.Class.AsString();
+                        }
+                        if (item.Summary.Version.AsString() != "")
+                        {
+                            version = item.Summary.Version.AsString();
                         }
                     }
 
@@ -108,7 +134,12 @@ namespace VSXmlToMarkdown
                         Intr = intr,
                         Obsolete = obsolete,
                         ObsoleteText = obsoleteText,
-                        Group = group
+                        Group = group,
+                        AppliesTo = appliesto,
+                        NameSpace = NameSpace,
+                        Assembly = assembly,
+                        Class = Class,
+                        Version = version
                     });
 
                     string _Directory = "doc/" + doc.Assembly.Name;
@@ -119,11 +150,37 @@ namespace VSXmlToMarkdown
 
                     StringBuilder builderContentTitle = new StringBuilder();
 
+                    string Version = item.Summary?.Version.AsString() == "" ? DateTime.Now.ToString("yyyy.MM.dd") : item.Summary?.Version;
+
                     //文件标题
                     builderContentTitle.AppendLine($"# {catelog}");
                     builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)");
                     builderContentTitle.AppendLine("");
-                    builderContentTitle.AppendLine($"**最新版本: v3.0.{DateTime.Now.ToString("MM.dd")} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {DateTime.Now.ToString("yyyy年MM月dd日")}**  ");
+                    builderContentTitle.AppendLine($"**最新版本: v3.0.{Version} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 更新日期:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
+
+                    builderContentTitle.AppendLine("## 定义");//
+                    builderContentTitle.AppendLine($" --- ");
+                    if (item.Summary?.Assembly.AsString() != "")
+                    {
+                        builderContentTitle.AppendLine($"-  程序集:");
+                        builderContentTitle.AppendLine($"  - [x] {item.Summary.Assembly}");
+                    }
+                    if (item.Summary?.NameSpace.AsString() != "")
+                    {
+                        builderContentTitle.AppendLine($"-  命名空间:");
+                        builderContentTitle.AppendLine($"  - [x] {item.Summary.NameSpace}");
+                    }
+                    if (item.Summary?.Class.AsString() != "")
+                    {
+                        builderContentTitle.AppendLine($"-  当前类名: ");
+                        builderContentTitle.AppendLine($"  - [x] {item.Summary.Class}");
+                    }
+                    if (item.Summary?.AppliesTo.AsString() != "")
+                    {
+                        builderContentTitle.AppendLine($"-  适用于: ");
+                        builderContentTitle.AppendLine($"  - [x] {item.Summary.AppliesTo}");
+                    }
+
                     builderContentTitle.AppendLine("<br/>");
                     builderContentTitle.AppendLine("## 说明");//
                     builderContentTitle.AppendLine("```C#");
@@ -134,7 +191,7 @@ namespace VSXmlToMarkdown
 
                     //处理子信息
 
-                    builderContentTitle.AppendLine(GenerateBody(doc.Members.Member, item.Name.AsString().Replace("T:", ""), catelog, doc.Assembly.Name, filename.Replace(".md", "")));
+                    builderContentTitle.AppendLine(GenerateBody(doc.Members.Member, item.Name.AsString().Replace("T:", ""), catelog, doc.Assembly.Name, filename.Replace(".md", ""), item));
 
                     File.WriteAllText("doc/" + filename, builderContentTitle.ToString().Replace("<T>", "&lt;T&gt;"));
                 }
@@ -184,7 +241,7 @@ namespace VSXmlToMarkdown
         /// <param name="name"></param>
         /// <param name="methodName"></param>
         /// <returns></returns>
-        public static string GenerateBody(List<Member> members, string name, string methodName, string assemblyName, string filename)
+        public static string GenerateBody(List<Member> members, string name, string methodName, string assemblyName, string filename,Member currMember)
         {
             StringBuilder builderBody = new StringBuilder();
 
@@ -194,8 +251,8 @@ namespace VSXmlToMarkdown
             #region 构造函数
             builderBody.AppendLine($" ## 构造函数");
 
-            builderBody.AppendLine($"|  构造函数    |   参数   |   说明   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- |");
+            builderBody.AppendLine($"|  构造函数    |   参数   |   说明   |   版本   |");
+            builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
             foreach (var item in mesmList)
             {
 
@@ -231,7 +288,7 @@ namespace VSXmlToMarkdown
                                 str = "<br />";
                             }
 
-                            builderBody.AppendLine($" | {methodName}({str}{string.Join(",<br />", paras).Trim()}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + s.Text.AsString().Trim() + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} | ");
+                            builderBody.AppendLine($" | {methodName}({str}{string.Join(",<br />", paras).Trim()}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + s.Text.AsString().Trim() + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
 
                         }
                         catch (Exception ex)
@@ -252,8 +309,8 @@ namespace VSXmlToMarkdown
 
             builderBody.AppendLine($" ## 方法");
 
-            builderBody.AppendLine($"|  方法    |   参数   |   说明   |   返回值   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
+            builderBody.AppendLine($"|  方法    |   参数   |   说明   |   返回值   |   版本   |");
+            builderBody.AppendLine($"| ---- | ---- | ---- | ---- | ---- |");
 
             int seque = 1;
 
@@ -314,12 +371,12 @@ namespace VSXmlToMarkdown
                         //参数组合
                         string methodFileName = Escape(methodName1.Replace("<T>", "")) + "-" + seque;
                         seque++;
-                        builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodFileName}.md#{methodName1})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} |");
+                        builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodFileName}.md#{methodName1})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} | {Escape(item.Summary.Version.AsString().Trim())} | ");
 
                         //m_UrlList.Add(new SeeasoLink { FileName = $"{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md", Ulr = $"../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")}" });
 
                         //生成方法说明  $"{methodName.Replace("<T>", "&lt;T&gt;")}.md"
-                        GenerateExample(item, name, methodName1, assemblyName, filename, methodFileName);
+                        GenerateExample(item, name, methodName1, assemblyName, filename, methodFileName, currMember);
 
                     }
                     catch (Exception ex)
@@ -338,8 +395,8 @@ namespace VSXmlToMarkdown
 
             builderBody.AppendLine($" ## 变量");
 
-            builderBody.AppendLine($"|  名称    |   类型   |   说明   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- |");
+            builderBody.AppendLine($"|  名称    |   类型   |   说明   |   版本   |");
+            builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
 
 
             //Field — 字段
@@ -352,7 +409,7 @@ namespace VSXmlToMarkdown
 
                     string filed = item.Name.AsString().Replace("F:" + name + ".", "");
 
-                    builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | ");
+                    builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} |  {Escape(item.Summary.Version.AsString().Trim())} | ");
                 }
             }
             #endregion
@@ -361,8 +418,8 @@ namespace VSXmlToMarkdown
 
             builderBody.AppendLine($" ## 属性");
 
-            builderBody.AppendLine($"|  名称    |   类型   |   说明   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- |");
+            builderBody.AppendLine($"|  名称    |   类型   |   说明   |   版本   |");
+            builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
 
             //包括索引器或其他索引属性。
             foreach (var item in mesmList)
@@ -372,7 +429,7 @@ namespace VSXmlToMarkdown
                 {
                     string filed = item.Name.AsString().Replace("P:" + name + ".", "");
 
-                    builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | ");
+                    builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
                 }
             }
             #endregion
@@ -380,8 +437,8 @@ namespace VSXmlToMarkdown
             #region 事件
             builderBody.AppendLine($" ## 事件");
 
-            builderBody.AppendLine($"|  名称    |   类型   |   说明   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- |");
+            builderBody.AppendLine($"|  名称    |   类型   |   说明   |   版本   |");
+            builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
             //事件。
             foreach (var item in mesmList)
             {
@@ -390,7 +447,7 @@ namespace VSXmlToMarkdown
                 {
                     string filed = item.Name.AsString().Replace("E:" + name + ".", "");
 
-                    builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | ");
+                    builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
                 }
             }
             #endregion
@@ -426,16 +483,42 @@ namespace VSXmlToMarkdown
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static void GenerateExample(Member member, string name, string methodName, string assemblyName, string filename, string methodFileName)
+        public static void GenerateExample(Member member, string name, string methodName, string assemblyName, string filename, string methodFileName, Member currMember)
         {
 
             StringBuilder builderContentTitle = new StringBuilder();
+
+            string Version = member.Summary.Version.AsString() == "" ? DateTime.Now.ToString("yyyy.MM.dd") : member.Summary.Version;
 
             //文件标题
             builderContentTitle.AppendLine($"# {methodName}");
             builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)");
             builderContentTitle.AppendLine("");
-            builderContentTitle.AppendLine($"**最新版本: v3.0.{DateTime.Now.ToString("MM.dd")} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {DateTime.Now.ToString("yyyy年MM月dd日")}**  ");
+            builderContentTitle.AppendLine($"**最新版本: v3.0.{Version} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 最后更新时间:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
+
+            builderContentTitle.AppendLine("#### 定义");//
+            builderContentTitle.AppendLine($" --- ");
+            if (currMember.Summary?.Assembly.AsString() != "")
+            {
+                builderContentTitle.AppendLine($"-  程序集:");
+                builderContentTitle.AppendLine($"  - [x] {currMember.Summary.Assembly}");
+            }
+            if (currMember.Summary?.NameSpace.AsString() != "")
+            {
+                builderContentTitle.AppendLine($"-  命名空间:");
+                builderContentTitle.AppendLine($"  - [x] {currMember.Summary.NameSpace}");
+            }
+            if (currMember.Summary?.Class.AsString() != "")
+            {
+                builderContentTitle.AppendLine($"-  当前类名: ");
+                builderContentTitle.AppendLine($"  - [x] {currMember.Summary.Class}");
+            }
+            if (currMember.Summary?.AppliesTo.AsString() != "")
+            {
+                builderContentTitle.AppendLine($"-  适用于: ");
+                builderContentTitle.AppendLine($"  - [x] {currMember.Summary.AppliesTo}");
+            }
+
             builderContentTitle.AppendLine("<br/>");
             builderContentTitle.AppendLine("#### 说明");//
             builderContentTitle.AppendLine($" --- ");

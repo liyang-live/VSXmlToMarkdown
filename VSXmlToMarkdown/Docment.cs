@@ -148,6 +148,35 @@ namespace VSXmlToMarkdown
             get; set;
         }
 
+        [XmlElement(ElementName = "appliesto")]
+        public string AppliesTo
+        {
+            get; set;
+        }
+
+        [XmlElement(ElementName = "namespace")]
+        public string NameSpace
+        {
+            get; set;
+        }
+
+        [XmlElement(ElementName = "assembly")]
+        public string Assembly
+        {
+            get; set;
+        }
+
+        [XmlElement(ElementName = "class")]
+        public string Class
+        {
+            get; set;
+        }
+
+        [XmlElement(ElementName = "version")]
+        public string Version
+        {
+            get; set;
+        }
     }
 
     [XmlRoot(ElementName = "paramref")]
@@ -337,6 +366,30 @@ namespace VSXmlToMarkdown
             get; set;
         }
         public string Intr
+        {
+            get; set;
+        }
+        public string AppliesTo
+        {
+            get; set;
+        }
+
+        public string NameSpace
+        {
+            get; set;
+        }
+
+        public string Assembly
+        {
+            get; set;
+        }
+
+        public string Class
+        {
+            get; set;
+        }
+
+        public string Version
         {
             get; set;
         }
