@@ -505,7 +505,7 @@ namespace VSXmlToMarkdown
 
             if (member?.Returns?.Text != null)
             {
-                builderContentTitle.AppendLine($"  `{Escape(member?.Returns?.Text?.Trim())}` ");
+                builderContentTitle.AppendLine($"  {Escape(member?.Returns?.Text?.Trim())} ");
 
                 builderContentTitle.AppendLine();
                 _IsReturns = false;
@@ -563,7 +563,7 @@ namespace VSXmlToMarkdown
 
             if (member?.Exception?.Text != null)
             {
-                builderContentTitle.AppendLine($"  `{Escape(member?.Exception?.Text?.Trim())}` ");
+                builderContentTitle.AppendLine($"  {Escape(member?.Exception?.Text?.Trim())} ");
                 _IsException = false;
             }
             builderContentTitle.AppendLine();
