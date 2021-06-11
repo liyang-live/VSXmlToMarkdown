@@ -182,7 +182,8 @@ namespace VSXmlToMarkdown
                     }
 
                     builderContentTitle.AppendLine("<br/>");
-                    builderContentTitle.AppendLine("## 说明");//
+                    builderContentTitle.AppendLine("");//
+                    builderContentTitle.AppendLine("## 说明 ");//
                     builderContentTitle.AppendLine("```C#");
                     builderContentTitle.AppendLine($"{intr.Trim()}");
                     builderContentTitle.AppendLine("```");
@@ -520,7 +521,8 @@ namespace VSXmlToMarkdown
             }
 
             builderContentTitle.AppendLine("<br/>");
-            builderContentTitle.AppendLine("#### 说明");//
+            builderContentTitle.AppendLine($"");
+            builderContentTitle.AppendLine("#### 说明 ");//
             builderContentTitle.AppendLine($" --- ");
             builderContentTitle.AppendLine("```C#");
             builderContentTitle.AppendLine($"{member.Summary.Text.AsString().Trim()}");
