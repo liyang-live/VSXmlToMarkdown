@@ -417,7 +417,13 @@ namespace VSXmlToMarkdown
 
                         string filed = item.Name.AsString().Replace("F:" + name + ".", "");
 
-                        builderBody.AppendLine($" | {filed}| {GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())} | {Escape(item.Summary.Text.AsString().Trim())} |  {Escape(item.Summary.Version.AsString().Trim())} | ");
+                        string type = "";
+                        if (item.Summary.Type.AsString() != "")
+                        {
+                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())})";
+                        }
+
+                        builderBody.AppendLine($" | {filed}| {type} | {Escape(item.Summary.Text.AsString().Trim())} |  {Escape(item.Summary.Version.AsString().Trim())} | ");
                     }
                 }
             }
@@ -439,7 +445,13 @@ namespace VSXmlToMarkdown
                     {
                         string filed = item.Name.AsString().Replace("P:" + name + ".", "");
 
-                        builderBody.AppendLine($" | {filed}| {GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+                        string type = "";
+                        if (item.Summary.Type.AsString() != "")
+                        {
+                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())})";
+                        }
+
+                        builderBody.AppendLine($" | {filed}| {type} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
                     }
                 }
             }
@@ -459,8 +471,13 @@ namespace VSXmlToMarkdown
                     if (item.Name.Contains("E:"))
                     {
                         string filed = item.Name.AsString().Replace("E:" + name + ".", "");
+                        string type = "";
+                        if (item.Summary.Type.AsString() != "")
+                        {
+                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())})";
+                        }
 
-                        builderBody.AppendLine($" | {filed}| {GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+                        builderBody.AppendLine($" | {filed}| {type} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
                     }
                 }
             }
@@ -482,8 +499,13 @@ namespace VSXmlToMarkdown
                     if (item.Name.Contains("!:"))
                     {
                         string filed = item.Name.AsString().Replace("!:" + name + ".", "");
+                        string type = "";
+                        if (item.Summary.Type.AsString() != "")
+                        {
+                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())})";
+                        }
 
-                        builderBody.AppendLine($" | {filed}| {GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())} | {Escape(item.Summary.Text.AsString().Trim())} | ");
+                        builderBody.AppendLine($" | {filed}| {type} | {Escape(item.Summary.Text.AsString().Trim())} | ");
                     }
                 }
             }
