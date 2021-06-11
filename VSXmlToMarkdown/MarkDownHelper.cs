@@ -184,6 +184,7 @@ namespace VSXmlToMarkdown
                     builderContentTitle.AppendLine("<br/>");
                     builderContentTitle.AppendLine("");//
                     builderContentTitle.AppendLine("## 说明 ");//
+                    builderContentTitle.AppendLine($" --- ");
                     builderContentTitle.AppendLine("```C#");
                     builderContentTitle.AppendLine($"{intr.Trim()}");
                     builderContentTitle.AppendLine("```");
@@ -250,46 +251,138 @@ namespace VSXmlToMarkdown
 
 
             #region 构造函数
-            builderBody.AppendLine($" ## 构造函数");
-
-            builderBody.AppendLine($"|  构造函数    |   参数   |   说明   |   版本   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
-            foreach (var item in mesmList)
+            if (mesmList.Exists(s => s.Name.Contains("M:")&&(s.Name.Contains("#ctor") || s.Name.Contains("#cctor"))))
             {
-
-                //方法、构造函数
-                if (item.Name.Contains("M:"))
+                builderBody.AppendLine($" ## 构造函数");
+                builderBody.AppendLine($" --- ");
+                builderBody.AppendLine($"|  构造函数    |   参数   |   说明   |   版本   |");
+                builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
+                foreach (var item in mesmList)
                 {
 
-                    //构造函数  M:Lenovo.HIS.Common.DataField.#ctor(System.String)
-                    if (item.Name.Contains("#ctor") || item.Name.Contains("#cctor"))
+                    //方法、构造函数
+                    if (item.Name.Contains("M:"))
+                    {
+
+                        //构造函数  M:Lenovo.HIS.Common.DataField.#ctor(System.String)
+                        if (item.Name.Contains("#ctor") || item.Name.Contains("#cctor"))
+                        {
+                            try
+                            {
+
+                                //M:Lenovo.HIS.Common.TComparer`1.#ctor(System.Func{`0,`0,System.Boolean})
+                                //var paras = item.Name.AsString().Replace("M:" + name + ".#ctor", "").Replace(")", "").Split('(').ToList();
+
+                                //paras.Remove("");
+
+                                var paras = GetParamTypes(item.Name.AsString());
+
+                                if (paras != null && paras.Count > 0)
+                                {
+
+                                    for (int i = 0; i < paras.Count; i++)
+                                    {
+                                        paras[i] = "[" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i], methodName, item.Name)})" + "&nbsp;&nbsp;" + item.Param[i].Name;
+                                    }
+                                }
+
+                                string str = "";
+                                if (paras != null && paras.Count > 0)
+                                {
+                                    str = "<br />";
+                                }
+
+                                builderBody.AppendLine($" | {methodName}({str}{string.Join(",<br />", paras).Trim()}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + s.Text.AsString().Trim() + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+
+                            }
+                            catch (Exception ex)
+                            {
+                                m_LogList.Add("");
+                                string msg = $"错误数据:{item.Name.AsString()}  错误信息:{ex.ToString()}";
+                                m_LogList.Add(msg);
+                                File.AppendAllText($"{DateTime.Now.ToString("yyyy-MM-dd")}.log", msg);
+                                //Console.WriteLine($"错误数据:{item.Name.AsString()}  错误信息:{ex.ToString()}");
+                            }
+                        }
+                    }
+
+                }
+            }
+            #endregion
+
+            #region 方法
+            if (mesmList.Exists(s => s.Name.Contains("M:") && !(s.Name.Contains("#ctor") || s.Name.Contains("#cctor"))))
+            {
+                builderBody.AppendLine($" ## 方法");
+                builderBody.AppendLine($" --- ");
+                builderBody.AppendLine($"|  方法    |   参数   |   说明   |   返回值   |   版本   |");
+                builderBody.AppendLine($"| ---- | ---- | ---- | ---- | ---- |");
+
+                int seque = 1;
+
+                //Field — 方法
+                foreach (var item in mesmList)
+                {
+
+                    //M:Lenovo.HIS.Common.FuncAgeHelper.GetAgeByBirthday(System.Nullable{System.DateTime},System.Int32,System.Int32,System.Int32,System.Int32)
+                    //M:Lenovo.HIS.Common.FuncDefaultHttpHelper.HttpRequest2(Lenovo.HIS.Common.EnumHttpMethodType2,Lenovo.HIS.Common.EnumContextTypes2,System.Collections.Generic.Dictionary{System.String,System.String},System.Collections.Generic.Dictionary{System.String,System.Object})
+                    //方法
+                    if (item.Name.Contains("M:") && !(item.Name.Contains("#ctor") || item.Name.Contains("#cctor")))
                     {
                         try
                         {
 
-                            //M:Lenovo.HIS.Common.TComparer`1.#ctor(System.Func{`0,`0,System.Boolean})
-                            //var paras = item.Name.AsString().Replace("M:" + name + ".#ctor", "").Replace(")", "").Split('(').ToList();
+                            //方法名
+                            string methodName1 = item.Name.AsString().Replace("M:" + name + ".", "").Split('(')[0];
+
+                            //var paras = item.Name.AsString().Replace("M:" + name + ".", "").Replace(")", "").Split('(').ToList();
 
                             //paras.Remove("");
 
+                            //参数
                             var paras = GetParamTypes(item.Name.AsString());
-
+                            // paras = paras[1].Split(',').ToList();
                             if (paras != null && paras.Count > 0)
                             {
-
                                 for (int i = 0; i < paras.Count; i++)
                                 {
-                                    paras[i] = "[" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i], methodName, item.Name)})" + "&nbsp;&nbsp;" + item.Param[i].Name;
+                                    paras[i] = " [" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i], methodName1, item.Name.AsString())})" + " &nbsp;&nbsp;" + item.Param[i].Name;
                                 }
                             }
 
+                            string obsolete = ""; //弃用
+                            string obsoleteText = ""; //弃用
+                            string group = "";                    //组
+                            string intr = "";//介绍
+                            if (item.Summary != null && item.Summary.Text != null)
+                            {
+                                intr = string.Join(",", item.Summary.Text);
+
+                                if (item.Summary.Obsolete.AsString() != "")
+                                {
+                                    obsolete = "⚡<font size=3 color=red>【弃用】</font>";
+                                    obsoleteText = "⚡<font size=3 color=red>【弃用说明】</font>" + item.Summary.Obsolete.AsString();
+                                }
+                                if (item.Summary.Group.AsString() != "")
+                                {
+                                    group = item.Summary.Group.AsString();
+                                }
+                            }
                             string str = "";
                             if (paras != null && paras.Count > 0)
                             {
                                 str = "<br />";
                             }
 
-                            builderBody.AppendLine($" | {methodName}({str}{string.Join(",<br />", paras).Trim()}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + s.Text.AsString().Trim() + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+                            //参数组合
+                            string methodFileName = Escape(methodName1.Replace("<T>", "")) + "-" + seque;
+                            seque++;
+                            builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodFileName}.md#{methodName1})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+
+                            //m_UrlList.Add(new SeeasoLink { FileName = $"{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md", Ulr = $"../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")}" });
+
+                            //生成方法说明  $"{methodName.Replace("<T>", "&lt;T&gt;")}.md"
+                            GenerateExample(item, name, methodName1, assemblyName, filename, methodFileName, currMember);
 
                         }
                         catch (Exception ex)
@@ -302,153 +395,73 @@ namespace VSXmlToMarkdown
                         }
                     }
                 }
-
-            }
-            #endregion
-
-            #region 方法
-
-            builderBody.AppendLine($" ## 方法");
-
-            builderBody.AppendLine($"|  方法    |   参数   |   说明   |   返回值   |   版本   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- | ---- | ---- |");
-
-            int seque = 1;
-
-            //Field — 方法
-            foreach (var item in mesmList)
-            {
-
-                //M:Lenovo.HIS.Common.FuncAgeHelper.GetAgeByBirthday(System.Nullable{System.DateTime},System.Int32,System.Int32,System.Int32,System.Int32)
-                //M:Lenovo.HIS.Common.FuncDefaultHttpHelper.HttpRequest2(Lenovo.HIS.Common.EnumHttpMethodType2,Lenovo.HIS.Common.EnumContextTypes2,System.Collections.Generic.Dictionary{System.String,System.String},System.Collections.Generic.Dictionary{System.String,System.Object})
-                //方法
-                if (item.Name.Contains("M:") && !(item.Name.Contains("#ctor") || item.Name.Contains("#cctor")))
-                {
-                    try
-                    {
-
-                        //方法名
-                        string methodName1 = item.Name.AsString().Replace("M:" + name + ".", "").Split('(')[0];
-
-                        //var paras = item.Name.AsString().Replace("M:" + name + ".", "").Replace(")", "").Split('(').ToList();
-
-                        //paras.Remove("");
-
-                        //参数
-                        var paras = GetParamTypes(item.Name.AsString());
-                        // paras = paras[1].Split(',').ToList();
-                        if (paras != null && paras.Count > 0)
-                        {
-                            for (int i = 0; i < paras.Count; i++)
-                            {
-                                paras[i] = " [" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i], methodName1, item.Name.AsString())})" + " &nbsp;&nbsp;" + item.Param[i].Name;
-                            }
-                        }
-
-                        string obsolete = ""; //弃用
-                        string obsoleteText = ""; //弃用
-                        string group = "";                    //组
-                        string intr = "";//介绍
-                        if (item.Summary != null && item.Summary.Text != null)
-                        {
-                            intr = string.Join(",", item.Summary.Text);
-
-                            if (item.Summary.Obsolete.AsString() != "")
-                            {
-                                obsolete = "⚡<font size=3 color=red>【弃用】</font>";
-                                obsoleteText = "⚡<font size=3 color=red>【弃用说明】</font>" + item.Summary.Obsolete.AsString();
-                            }
-                            if (item.Summary.Group.AsString() != "")
-                            {
-                                group = item.Summary.Group.AsString();
-                            }
-                        }
-                        string str = "";
-                        if (paras != null && paras.Count > 0)
-                        {
-                            str = "<br />";
-                        }
-
-                        //参数组合
-                        string methodFileName = Escape(methodName1.Replace("<T>", "")) + "-" + seque;
-                        seque++;
-                        builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodFileName}.md#{methodName1})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} | {Escape(item.Summary.Version.AsString().Trim())} | ");
-
-                        //m_UrlList.Add(new SeeasoLink { FileName = $"{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md", Ulr = $"../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")}" });
-
-                        //生成方法说明  $"{methodName.Replace("<T>", "&lt;T&gt;")}.md"
-                        GenerateExample(item, name, methodName1, assemblyName, filename, methodFileName, currMember);
-
-                    }
-                    catch (Exception ex)
-                    {
-                        m_LogList.Add("");
-                        string msg = $"错误数据:{item.Name.AsString()}  错误信息:{ex.ToString()}";
-                        m_LogList.Add(msg);
-                        File.AppendAllText($"{DateTime.Now.ToString("yyyy-MM-dd")}.log", msg);
-                        //Console.WriteLine($"错误数据:{item.Name.AsString()}  错误信息:{ex.ToString()}");
-                    }
-                }
             }
             #endregion
 
             #region 变量
-
-            builderBody.AppendLine($" ## 变量");
-
-            builderBody.AppendLine($"|  名称    |   类型   |   说明   |   版本   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
-
-
-            //Field — 字段
-            foreach (var item in mesmList)
+            if (mesmList.Exists(s => s.Name.Contains("F:")))
             {
+                builderBody.AppendLine($" ## 变量");
+                builderBody.AppendLine($" --- ");
+                builderBody.AppendLine($"|  名称    |   类型   |   说明   |   版本   |");
+                builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
+
 
                 //Field — 字段
-                if (item.Name.Contains("F:"))
+                foreach (var item in mesmList)
                 {
 
-                    string filed = item.Name.AsString().Replace("F:" + name + ".", "");
+                    //Field — 字段
+                    if (item.Name.Contains("F:"))
+                    {
 
-                    builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} |  {Escape(item.Summary.Version.AsString().Trim())} | ");
+                        string filed = item.Name.AsString().Replace("F:" + name + ".", "");
+
+                        builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} |  {Escape(item.Summary.Version.AsString().Trim())} | ");
+                    }
                 }
             }
             #endregion
 
             #region 属性
-
-            builderBody.AppendLine($" ## 属性");
-
-            builderBody.AppendLine($"|  名称    |   类型   |   说明   |   版本   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
-
-            //包括索引器或其他索引属性。
-            foreach (var item in mesmList)
+            if (mesmList.Exists(s => s.Name.Contains("P:")))
             {
-                //包括索引器或其他索引属性。
-                if (item.Name.Contains("P:"))
-                {
-                    string filed = item.Name.AsString().Replace("P:" + name + ".", "");
+                builderBody.AppendLine($" ## 属性");
+                builderBody.AppendLine($" --- ");
+                builderBody.AppendLine($"|  名称    |   类型   |   说明   |   版本   |");
+                builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
 
-                    builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+                //包括索引器或其他索引属性。
+                foreach (var item in mesmList)
+                {
+                    //包括索引器或其他索引属性。
+                    if (item.Name.Contains("P:"))
+                    {
+                        string filed = item.Name.AsString().Replace("P:" + name + ".", "");
+
+                        builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+                    }
                 }
             }
             #endregion
 
             #region 事件
-            builderBody.AppendLine($" ## 事件");
-
-            builderBody.AppendLine($"|  名称    |   类型   |   说明   |   版本   |");
-            builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
-            //事件。
-            foreach (var item in mesmList)
+            if (mesmList.Exists(s => s.Name.Contains("E:")))
             {
-                //事件
-                if (item.Name.Contains("E:"))
+                builderBody.AppendLine($" ## 事件");
+                builderBody.AppendLine($" --- ");
+                builderBody.AppendLine($"|  名称    |   类型   |   说明   |   版本   |");
+                builderBody.AppendLine($"| ---- | ---- | ---- | ---- |");
+                //事件。
+                foreach (var item in mesmList)
                 {
-                    string filed = item.Name.AsString().Replace("E:" + name + ".", "");
+                    //事件
+                    if (item.Name.Contains("E:"))
+                    {
+                        string filed = item.Name.AsString().Replace("E:" + name + ".", "");
 
-                    builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+                        builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+                    }
                 }
             }
             #endregion
@@ -459,7 +472,7 @@ namespace VSXmlToMarkdown
             {
 
                 builderBody.AppendLine($" ## 属性");
-
+                builderBody.AppendLine($" --- ");
                 builderBody.AppendLine($"|  名称    |   类型   |   说明   |");
                 builderBody.AppendLine($"| ---- | ---- | ---- |");
                 //错误字符串。

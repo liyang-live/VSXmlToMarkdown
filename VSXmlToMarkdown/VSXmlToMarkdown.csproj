@@ -112,9 +112,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="aaxhz-oo8qf-001.ico" />
     <Content Include="av8jb-vaqt9-001.ico" />
-    <Content Include="bitbug_favicon.ico" />
+    <Content Include="Lenovo.HIS.cUtils.XML" />
     <Content Include="微信截图_20210601175940.png" />
     <Content Include="微信截图_20210601180013.png" />
   </ItemGroup>
