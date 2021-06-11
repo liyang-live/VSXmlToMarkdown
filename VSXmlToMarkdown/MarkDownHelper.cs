@@ -417,7 +417,7 @@ namespace VSXmlToMarkdown
 
                         string filed = item.Name.AsString().Replace("F:" + name + ".", "");
 
-                        builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} |  {Escape(item.Summary.Version.AsString().Trim())} | ");
+                        builderBody.AppendLine($" | {filed}| {GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())} | {Escape(item.Summary.Text.AsString().Trim())} |  {Escape(item.Summary.Version.AsString().Trim())} | ");
                     }
                 }
             }
@@ -439,7 +439,7 @@ namespace VSXmlToMarkdown
                     {
                         string filed = item.Name.AsString().Replace("P:" + name + ".", "");
 
-                        builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+                        builderBody.AppendLine($" | {filed}| {GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
                     }
                 }
             }
@@ -460,7 +460,7 @@ namespace VSXmlToMarkdown
                     {
                         string filed = item.Name.AsString().Replace("E:" + name + ".", "");
 
-                        builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+                        builderBody.AppendLine($" | {filed}| {GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
                     }
                 }
             }
@@ -483,7 +483,7 @@ namespace VSXmlToMarkdown
                     {
                         string filed = item.Name.AsString().Replace("!:" + name + ".", "");
 
-                        builderBody.AppendLine($" | {filed}|  | {Escape(item.Summary.Text.AsString().Trim())} | ");
+                        builderBody.AppendLine($" | {filed}| {GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())} | {Escape(item.Summary.Text.AsString().Trim())} | ");
                     }
                 }
             }

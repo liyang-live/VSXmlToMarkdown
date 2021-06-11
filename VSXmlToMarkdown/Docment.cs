@@ -21,9 +21,40 @@ namespace VSXmlToMarkdown
         }
     }
 
+    /// <summary>
+    /// 
+    ///    <group></group>
+    ///    <obsolete></obsolete>
+    ///    <appliesto>Net FrameWork 4.0;</appliesto>
+    ///    <namespace>VSXmlToMarkdown</namespace>
+    ///    <assembly>VSXmlToMarkdown.dll</assembly>
+    ///    <class>VSXmlToMarkdown.Member</class>
+    ///    <version>2021/6/11-10:11</version>
+    /// </summary>
+    /// <example>
+    ///    <code>
+    ///    </code>
+    /// </example>
+    /// <exception cref="System.Exception">
+    /// </exception>
     [XmlRoot(ElementName = "member")]
     public class Member
     {
+
+        /// <summary>
+        /// Gets or sets the text.
+        ///    <type>System.String</type>
+        ///    <version>2021/6/11-10:11</version>
+        /// </summary>
+        /// <value>
+        /// The text.
+        /// </value>
+        /// <example>
+        ///    <code>
+        ///    </code>
+        /// </example>
+        /// <exception cref="System.Exception">
+        /// </exception>
         [XmlText]
         public string Text
         {
@@ -177,6 +208,13 @@ namespace VSXmlToMarkdown
         {
             get; set;
         }
+
+        [XmlElement(ElementName = "type")]
+        public string Type
+        {
+            get; set;
+        }
+        
     }
 
     [XmlRoot(ElementName = "paramref")]
