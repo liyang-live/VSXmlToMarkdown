@@ -53,6 +53,11 @@ namespace VSXmlToMarkdown
                 m_FilenNames = openFileDialog1.FileNames;
                 string path1 = AppDomain.CurrentDomain.BaseDirectory + "/doc";
 
+                if (!Directory.Exists(path1))
+                {
+                    Directory.CreateDirectory(path1);
+                }
+
                 Directory.Delete(path1, true);
 
                 foreach (var item in m_FilenNames)

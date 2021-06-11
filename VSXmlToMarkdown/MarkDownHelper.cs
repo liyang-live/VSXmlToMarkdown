@@ -154,7 +154,7 @@ namespace VSXmlToMarkdown
 
                     //文件标题
                     builderContentTitle.AppendLine($"# {catelog}");
-                    builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)");
+                    builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e-mail:<a href=\"mailto: liyang@anxhit.com\"> 发送邮件报告问题📧</a>");
                     builderContentTitle.AppendLine("");
                     builderContentTitle.AppendLine($"**最新版本: v3.0.{Version} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 最后更新时间:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
 
@@ -528,7 +528,7 @@ namespace VSXmlToMarkdown
 
             //文件标题
             builderContentTitle.AppendLine($"# {methodName}");
-            builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)");
+            builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e-mail:<a href=\"mailto: liyang@anxhit.com\"> 发送邮件报告问题📧</a>");
             builderContentTitle.AppendLine("");
             builderContentTitle.AppendLine($"**最新版本: v3.0.{Version} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 最后更新时间:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
 
@@ -869,7 +869,7 @@ namespace VSXmlToMarkdown
 
             //文件标题
             builderContentTitle.AppendLine($"# {doc.Assembly.Name}");
-            builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)");
+            builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e-mail:<a href=\"mailto: liyang@anxhit.com\"> 发送邮件报告问题📧</a>");
             builderContentTitle.AppendLine("");
             builderContentTitle.AppendLine($"**最新版本: v3.0.{DateTime.Now.ToString("yyyy.MM.dd")} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 最后更新时间:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
             builderContentTitle.AppendLine("```C#");
