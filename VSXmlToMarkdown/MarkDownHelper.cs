@@ -156,7 +156,7 @@ namespace VSXmlToMarkdown
                     builderContentTitle.AppendLine($"# {catelog}");
                     builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)");
                     builderContentTitle.AppendLine("");
-                    builderContentTitle.AppendLine($"**最新版本: v3.0.{Version} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 更新日期:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
+                    builderContentTitle.AppendLine($"**最新版本: v3.0.{Version} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 最后更新时间:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
 
                     builderContentTitle.AppendLine("## 定义");//
                     builderContentTitle.AppendLine($" --- ");
@@ -871,7 +871,7 @@ namespace VSXmlToMarkdown
             builderContentTitle.AppendLine($"# {doc.Assembly.Name}");
             builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)");
             builderContentTitle.AppendLine("");
-            builderContentTitle.AppendLine($"**最新版本: v3.0.{DateTime.Now.ToString("MM.dd")} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {DateTime.Now.ToString("yyyy年MM月dd日")}**  ");
+            builderContentTitle.AppendLine($"**最新版本: v3.0.{DateTime.Now.ToString("yyyy.MM.dd")} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 最后更新时间:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
             builderContentTitle.AppendLine("```C#");
             builderContentTitle.AppendLine($" 本章节为{doc.Assembly.Name}目录介绍章节");
             builderContentTitle.AppendLine("```");
