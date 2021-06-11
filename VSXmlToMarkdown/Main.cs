@@ -12,8 +12,6 @@ using System.Windows.Forms;
 
 namespace VSXmlToMarkdown
 {
-
-
     public partial class Main : Form
     {
         //使用Windows Api AnimateWindow
@@ -87,7 +85,4 @@ namespace VSXmlToMarkdown
             AnimateWindow(this.Handle, 5000, 0);
         }
     }
-
-
-
 }
