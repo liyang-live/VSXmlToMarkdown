@@ -37,6 +37,7 @@ namespace VSXmlToMarkdown
             this.panel2 = new System.Windows.Forms.Panel();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.txtFileNames = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -80,6 +81,7 @@ namespace VSXmlToMarkdown
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.txtFileNames);
             this.panel2.Controls.Add(this.listBox1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 74);
@@ -89,19 +91,29 @@ namespace VSXmlToMarkdown
             // 
             // listBox1
             // 
-            this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBox1.Dock = System.Windows.Forms.DockStyle.Left;
             this.listBox1.FormattingEnabled = true;
             this.listBox1.HorizontalScrollbar = true;
             this.listBox1.ItemHeight = 15;
             this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
             this.listBox1.ScrollAlwaysVisible = true;
-            this.listBox1.Size = new System.Drawing.Size(990, 596);
+            this.listBox1.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.listBox1.Size = new System.Drawing.Size(424, 596);
             this.listBox1.TabIndex = 0;
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // txtFileNames
+            // 
+            this.txtFileNames.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtFileNames.Location = new System.Drawing.Point(424, 0);
+            this.txtFileNames.Multiline = true;
+            this.txtFileNames.Name = "txtFileNames";
+            this.txtFileNames.Size = new System.Drawing.Size(566, 596);
+            this.txtFileNames.TabIndex = 1;
             // 
             // Main
             // 
@@ -116,6 +128,7 @@ namespace VSXmlToMarkdown
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -129,6 +142,7 @@ namespace VSXmlToMarkdown
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.TextBox txtFileNames;
     }
 }
 

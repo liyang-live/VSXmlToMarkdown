@@ -377,12 +377,15 @@ namespace VSXmlToMarkdown
                             //参数组合
                             string methodFileName = Escape(methodName1.Replace("<T>", "")) + "-" + seque;
                             seque++;
-                            builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodFileName}.md#{methodName1})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} | {Escape(item.Summary.Version.AsString().Trim())} | ");
+                            builderBody.AppendLine($" | [{obsolete}{methodName1}](../../doc{filename}/{methodFileName}.md#{Escape(methodName1.Replace("<T>", ""))})({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str}) | {string.Join("", item.Param.Select(s => s.Name + " : " + EscapeNoN(s.Text.AsString().Trim()) + " <br />")).Trim()} | {Escape(item.Summary.Text.AsString().Trim())} <br />{obsoleteText} | {Escape(item.Returns?.Text)} | {Escape(item.Summary.Version.AsString().Trim())} | ");
 
                             //m_UrlList.Add(new SeeasoLink { FileName = $"{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md", Ulr = $"../../doc{filename}/{methodName1.Replace("<T>", "&lt;T&gt;")}.md#{methodName1.Replace("<T>", "&lt;T&gt;")}" });
 
+                            string methodcontent = $"{obsolete}{methodName1}({str}{ConvertToMarkdown(string.Join(",<br />", paras).Trim())}{str})";
+
+
                             //生成方法说明  $"{methodName.Replace("<T>", "&lt;T&gt;")}.md"
-                            GenerateExample(item, name, methodName1, assemblyName, filename, methodFileName, currMember);
+                            GenerateExample(item, name, Escape(methodName1.Replace("<T>", "")), assemblyName, filename, methodFileName, currMember, methodcontent);
 
                         }
                         catch (Exception ex)
@@ -519,7 +522,7 @@ namespace VSXmlToMarkdown
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static void GenerateExample(Member member, string name, string methodName, string assemblyName, string filename, string methodFileName, Member currMember)
+        public static void GenerateExample(Member member, string name, string methodName, string assemblyName, string filename, string methodFileName, Member currMember,string methodcontent)
         {
 
             StringBuilder builderContentTitle = new StringBuilder();
@@ -559,6 +562,9 @@ namespace VSXmlToMarkdown
             builderContentTitle.AppendLine($"");
             builderContentTitle.AppendLine("#### 说明 ");//
             builderContentTitle.AppendLine($" --- ");
+            builderContentTitle.AppendLine("");
+            builderContentTitle.AppendLine($"{methodcontent}");
+            builderContentTitle.AppendLine("");
             builderContentTitle.AppendLine("```C#");
             builderContentTitle.AppendLine($"{member.Summary.Text.AsString().Trim()}");
             builderContentTitle.AppendLine("```");
