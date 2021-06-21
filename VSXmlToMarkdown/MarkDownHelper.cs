@@ -154,7 +154,7 @@ namespace VSXmlToMarkdown
 
                     //文件标题
                     builderContentTitle.AppendLine($"# {catelog}");
-                    builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e-mail:<a href=\"mailto: liyang@anxhit.com\"> 发送邮件报告问题📧</a>");
+                    builderContentTitle.AppendLine($"by [李洋](https://www.liyang.love/) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e-mail:<a href=\"mailto: liyang@anxhit.com\"> 发送邮件报告问题📧</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;审核人：[liyang](https://blog.liyang.love)");
                     builderContentTitle.AppendLine("");
                     builderContentTitle.AppendLine($"**最新版本: v3.0.{Version} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 最后更新时间:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
 
@@ -243,7 +243,7 @@ namespace VSXmlToMarkdown
         /// <param name="name"></param>
         /// <param name="methodName"></param>
         /// <returns></returns>
-        public static string GenerateBody(List<Member> members, string name, string methodName, string assemblyName, string filename,Member currMember)
+        public static string GenerateBody(List<Member> members, string name, string methodName, string assemblyName, string filename, Member currMember)
         {
             StringBuilder builderBody = new StringBuilder();
 
@@ -251,7 +251,7 @@ namespace VSXmlToMarkdown
 
 
             #region 构造函数
-            if (mesmList.Exists(s => s.Name.Contains("M:")&&(s.Name.Contains("#ctor") || s.Name.Contains("#cctor"))))
+            if (mesmList.Exists(s => s.Name.Contains("M:") && (s.Name.Contains("#ctor") || s.Name.Contains("#cctor"))))
             {
                 builderBody.AppendLine($" ## 构造函数");
                 builderBody.AppendLine($" --- ");
@@ -522,7 +522,7 @@ namespace VSXmlToMarkdown
         /// </summary>
         /// <param name="member"></param>
         /// <returns></returns>
-        public static void GenerateExample(Member member, string name, string methodName, string assemblyName, string filename, string methodFileName, Member currMember,string methodcontent)
+        public static void GenerateExample(Member member, string name, string methodName, string assemblyName, string filename, string methodFileName, Member currMember, string methodcontent)
         {
 
             StringBuilder builderContentTitle = new StringBuilder();
@@ -531,7 +531,7 @@ namespace VSXmlToMarkdown
 
             //文件标题
             builderContentTitle.AppendLine($"# {methodName}");
-            builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e-mail:<a href=\"mailto: liyang@anxhit.com\"> 发送邮件报告问题📧</a>");
+            builderContentTitle.AppendLine($"by [李洋](http://www.liyang.love/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e-mail:<a href=\"mailto: liyang@anxhit.com\"> 发送邮件报告问题📧</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;审核人：[李洋](https://blog.liyang.love)");
             builderContentTitle.AppendLine("");
             builderContentTitle.AppendLine($"**最新版本: v3.0.{Version} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 最后更新时间:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
 
@@ -636,17 +636,19 @@ namespace VSXmlToMarkdown
                 builderContentTitle.AppendLine();
                 _IsReturns = false;
             }
+
+
             //builderContentTitle.AppendLine("<br/>");
             //builderContentTitle.AppendLine(" ");
             if (member?.Returns != null)
             {
-                if (member?.Returns?.Seealso != null || member?.Returns?.See != null)
+                if ((member?.Returns?.Seealso != null && member?.Returns?.Seealso.Count > 0) || (member?.Returns?.See != null && member?.Returns?.See.Count > 0))
                 {
                     builderContentTitle.AppendLine($"|  名称    |   类型   |   说明   |   参见   |");
                     builderContentTitle.AppendLine($"| ---- | ---- | ---- | ---- |");
                 }
 
-                if (member?.Returns?.Seealso != null)
+                if ((member?.Returns?.Seealso != null && member?.Returns?.Seealso.Count > 0))
                 {
 
                     foreach (var item in member?.Returns?.Seealso)
@@ -654,24 +656,25 @@ namespace VSXmlToMarkdown
                         var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
                         //var _SeeAlso = item.Cref == null ? "" : "参见:" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString());
 
-                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
+                        builderContentTitle.AppendLine($"| {_SeeAlso.Replace("参见:", "")} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsReturns = false;
                     }
                 }
-                if (member?.Returns?.See != null)
+                if (member?.Returns?.See != null && member?.Returns?.See.Count > 0)
                 {
 
                     foreach (var item in member?.Returns?.See)
                     {
                         var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
 
-                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
+                        builderContentTitle.AppendLine($"| {_SeeAlso.Replace("参见:", "")} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsReturns = false;
                     }
                 }
             }
             if (_IsReturns)
             {
+                builderContentTitle.AppendLine();
                 builderContentTitle.AppendLine("`无相关信息`");
             }
             builderContentTitle.AppendLine();
@@ -703,9 +706,9 @@ namespace VSXmlToMarkdown
 
                 if (member?.Exception != null)
                 {
-                    var _SeeAlso = member?.Exception.Cref == null ? "" : $"参见:[{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(member?.Exception.Cref.AsString().Replace("T:", "")), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString()) + ")";
+                    var _SeeAlso = member?.Exception.Cref == null ? "" : $"参见:[{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(member?.Exception.Cref), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString()) + ")";
 
-                    builderContentTitle.AppendLine($"| [{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(member?.Exception.Cref.AsString().Replace("T:", "")), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString())}) |  | {Escape(member?.Exception.Text)} | {_SeeAlso} |");
+                    builderContentTitle.AppendLine($"| [{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(member?.Exception.Cref), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString())}) |  | {Escape(member?.Exception.Text)} | {_SeeAlso} |");
                     _IsException = false;
                 }
 
@@ -714,9 +717,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Exception?.Seealso)
                     {
-                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
 
-                        builderContentTitle.AppendLine($"| [{Escape(item.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())}) |  | {Escape(item.Text)} | {_SeeAlso} |");
+                        builderContentTitle.AppendLine($"| [{Escape(item.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString())}) |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsException = false;
                     }
                 }
@@ -725,9 +728,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Exception?.See)
                     {
-                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
 
-                        builderContentTitle.AppendLine($"| [{Escape(item.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())}) |  | {Escape(item.Text)} | {_SeeAlso} |");
+                        builderContentTitle.AppendLine($"| [{Escape(item.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString())}) |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsException = false;
                     }
                 }
@@ -743,6 +746,11 @@ namespace VSXmlToMarkdown
             builderContentTitle.AppendLine("<br/>");
             #endregion
 
+
+            if (member.Name.Contains("GetSignData"))
+            {
+
+            }
 
             //备注
             #region 备注
@@ -769,9 +777,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Remarks?.Seealso)
                     {
-                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
 
-                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
+                        builderContentTitle.AppendLine($"| {_SeeAlso.Replace("参见:", "")} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsRemarks = false;
                     }
                 }
@@ -780,9 +788,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Remarks?.See)
                     {
-                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
 
-                        builderContentTitle.AppendLine($"| {GetTypeUrl(Escape(item.Cref.AsString().Replace("T:", "")), item.Cref.AsString(), item.Cref.AsString())} |  | {Escape(item.Text)} | {_SeeAlso} |");
+                        builderContentTitle.AppendLine($"| {_SeeAlso.Replace("参见:", "")} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsRemarks = false;
                     }
                 }
@@ -795,6 +803,7 @@ namespace VSXmlToMarkdown
 
             //示例
             #region 示例
+            builderContentTitle.AppendLine();
             builderContentTitle.AppendLine("<br/>");
             builderContentTitle.AppendLine();
             builderContentTitle.AppendLine();
@@ -876,7 +885,7 @@ namespace VSXmlToMarkdown
 
             //文件标题
             builderContentTitle.AppendLine($"# {doc.Assembly.Name}");
-            builderContentTitle.AppendLine($"by [liyang](https://www.liyang.love/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e-mail:<a href=\"mailto: liyang@anxhit.com\"> 发送邮件报告问题📧</a>");
+            builderContentTitle.AppendLine($"by [李洋](https://www.liyang.love/)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e-mail:<a href=\"mailto: liyang@anxhit.com\"> 发送邮件报告问题📧</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;审核人：[liyang](https://blog.liyang.love)");
             builderContentTitle.AppendLine("");
             builderContentTitle.AppendLine($"**最新版本: v3.0.{DateTime.Now.ToString("yyyy.MM.dd")} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 最后更新时间:{DateTime.Now.ToString("yyyy年MM月dd日 HH:mm")}**  ");
             builderContentTitle.AppendLine("```C#");
@@ -906,7 +915,7 @@ namespace VSXmlToMarkdown
         {
             if (str.Contains("System.") && !str.Contains(".HIS."))
             {
-                return $"https://docs.microsoft.com/zh-cn/dotnet/api/" + str.ToLower().Replace("[]", "");
+                return $"https://docs.microsoft.com/zh-cn/dotnet/api/" + str.AsString().Replace("T:", "").ToLower().Replace("[]", "");
             }
 
             if (str.Contains(".HIS."))
