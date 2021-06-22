@@ -249,6 +249,9 @@ namespace VSXmlToMarkdown
 
             var mesmList = members.FindAll(s => s.Name.Contains(":" + name + ".") && !s.Name.Contains("T:"));
 
+            if (name.Contains("FuncHttpExtend2"))
+            {
+            }
 
             #region 构造函数
             if (mesmList.Exists(s => s.Name.Contains("M:") && (s.Name.Contains("#ctor") || s.Name.Contains("#cctor"))))
@@ -282,7 +285,7 @@ namespace VSXmlToMarkdown
 
                                     for (int i = 0; i < paras.Count; i++)
                                     {
-                                        paras[i] = "[" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i], methodName, item.Name)})" + "&nbsp;&nbsp;" + item.Param[i].Name;
+                                        paras[i] = "[" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i], methodName, item.Name, "GenerateBody")})" + "&nbsp;&nbsp;" + item.Param[i].Name;
                                     }
                                 }
 
@@ -346,7 +349,7 @@ namespace VSXmlToMarkdown
                             {
                                 for (int i = 0; i < paras.Count; i++)
                                 {
-                                    paras[i] = " [" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i], methodName1, item.Name.AsString())})" + " &nbsp;&nbsp;" + item.Param[i].Name;
+                                    paras[i] = " [" + ConvertToMarkdown(paras[i]).Replace("{", "&lt;").Replace("}", "&gt;") + $"]({GetTypeUrl(paras[i], methodName1, item.Name.AsString(), "GenerateBody")})" + " &nbsp;&nbsp;" + item.Param[i].Name;
                                 }
                             }
 
@@ -385,7 +388,7 @@ namespace VSXmlToMarkdown
 
 
                             //生成方法说明  $"{methodName.Replace("<T>", "&lt;T&gt;")}.md"
-                            GenerateExample(item, name, Escape(methodName1.Replace("<T>", "")), assemblyName, filename, methodFileName, currMember, methodcontent);
+                            GenerateExample(item, name, Escape(methodName1.Replace("<T>", "")), assemblyName, filename, methodFileName, currMember, methodcontent.Replace("../../doc", "../../../doc"));
 
                         }
                         catch (Exception ex)
@@ -423,7 +426,7 @@ namespace VSXmlToMarkdown
                         string type = "";
                         if (item.Summary.Type.AsString() != "")
                         {
-                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())})";
+                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString(), "GenerateBody")})";
                         }
 
                         builderBody.AppendLine($" | {filed}| {type} | {Escape(item.Summary.Text.AsString().Trim())} |  {Escape(item.Summary.Version.AsString().Trim())} | ");
@@ -451,7 +454,7 @@ namespace VSXmlToMarkdown
                         string type = "";
                         if (item.Summary.Type.AsString() != "")
                         {
-                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())})";
+                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString(), "GenerateBody")})";
                         }
 
                         builderBody.AppendLine($" | {filed}| {type} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
@@ -477,7 +480,7 @@ namespace VSXmlToMarkdown
                         string type = "";
                         if (item.Summary.Type.AsString() != "")
                         {
-                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())})";
+                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString(), "GenerateBody")})";
                         }
 
                         builderBody.AppendLine($" | {filed}| {type} | {Escape(item.Summary.Text.AsString().Trim())} | {Escape(item.Summary.Version.AsString().Trim())} | ");
@@ -505,7 +508,7 @@ namespace VSXmlToMarkdown
                         string type = "";
                         if (item.Summary.Type.AsString() != "")
                         {
-                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString())})";
+                            type = $"[{item.Summary.Type.AsString()}]({GetTypeUrl(item.Summary.Type.AsString(), item.Summary.Type.AsString(), item.Summary.Type.AsString(), "GenerateBody")})";
                         }
 
                         builderBody.AppendLine($" | {filed}| {type} | {Escape(item.Summary.Text.AsString().Trim())} | ");
@@ -596,7 +599,7 @@ namespace VSXmlToMarkdown
                         //参数组合
                         if (member?.Param[i]?.Seealso != null)
                         {
-                            var _SeeAlso = member?.Param[i]?.Seealso?.Cref == null ? "" : $"参见:[{Escape(member?.Param[i]?.Seealso?.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(member?.Param[i]?.Seealso?.Cref, member?.Param[i]?.Seealso?.Cref.AsString(), member?.Param[i]?.Seealso?.Cref.AsString()) + ")";
+                            var _SeeAlso = member?.Param[i]?.Seealso?.Cref == null ? "" : $"参见:[{Escape(member?.Param[i]?.Seealso?.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(member?.Param[i]?.Seealso?.Cref, member?.Param[i]?.Seealso?.Cref.AsString(), member?.Param[i]?.Seealso?.Cref.AsString(), "GenerateExample") + ")";
 
                             builderContentTitle.AppendLine($" | {member.Param[i].Name.Trim()}" +
                                 $"| [{paras[i]}]({GetTypeUrl(paras[i], paras[i], paras[i])}) | {ConvertToMarkdown(member.Param[i].Text.Trim()).Replace("{", "&lt;").Replace("}", "&gt;")} " +
@@ -604,7 +607,7 @@ namespace VSXmlToMarkdown
                         }
                         else
                         {
-                            var _SeeAlso = member?.Param[i]?.See?.Cref == null ? "" : $"参见:[{Escape(member?.Param[i]?.See?.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(member?.Param[i]?.See?.Cref, member?.Param[i]?.See?.Cref.AsString(), member?.Param[i]?.See?.Cref.AsString()) + ")";
+                            var _SeeAlso = member?.Param[i]?.See?.Cref == null ? "" : $"参见:[{Escape(member?.Param[i]?.See?.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(member?.Param[i]?.See?.Cref, member?.Param[i]?.See?.Cref.AsString(), member?.Param[i]?.See?.Cref.AsString(), "GenerateExample") + ")";
 
                             builderContentTitle.AppendLine($" | {member.Param[i].Name.Trim()}" +
                             $"| [{paras[i]}]({GetTypeUrl(paras[i], paras[i], paras[i])}) | {ConvertToMarkdown(member.Param[i].Text.AsString().Trim()).Replace("{", "&lt;").Replace("}", "&gt;")} " +
@@ -653,7 +656,7 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Returns?.Seealso)
                     {
-                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString(), "GenerateExample") + ")";
                         //var _SeeAlso = item.Cref == null ? "" : "参见:" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString());
 
                         builderContentTitle.AppendLine($"| {_SeeAlso.Replace("参见:", "")} |  | {Escape(item.Text)} | {_SeeAlso} |");
@@ -665,7 +668,7 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Returns?.See)
                     {
-                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString(), "GenerateExample") + ")";
 
                         builderContentTitle.AppendLine($"| {_SeeAlso.Replace("参见:", "")} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsReturns = false;
@@ -706,9 +709,9 @@ namespace VSXmlToMarkdown
 
                 if (member?.Exception != null)
                 {
-                    var _SeeAlso = member?.Exception.Cref == null ? "" : $"参见:[{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(member?.Exception.Cref), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString()) + ")";
+                    var _SeeAlso = member?.Exception.Cref == null ? "" : $"参见:[{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(member?.Exception.Cref), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString(), "GenerateExample") + ")";
 
-                    builderContentTitle.AppendLine($"| [{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(member?.Exception.Cref), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString())}) |  | {Escape(member?.Exception.Text)} | {_SeeAlso} |");
+                    builderContentTitle.AppendLine($"| [{Escape(member?.Exception.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(member?.Exception.Cref), member?.Exception.Cref.AsString(), member?.Exception.Cref.AsString(), "GenerateExample")}) |  | {Escape(member?.Exception.Text)} | {_SeeAlso} |");
                     _IsException = false;
                 }
 
@@ -717,9 +720,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Exception?.Seealso)
                     {
-                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString(), "GenerateExample") + ")";
 
-                        builderContentTitle.AppendLine($"| [{Escape(item.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString())}) |  | {Escape(item.Text)} | {_SeeAlso} |");
+                        builderContentTitle.AppendLine($"| [{Escape(item.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString(), "GenerateExample")}) |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsException = false;
                     }
                 }
@@ -728,9 +731,9 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Exception?.See)
                     {
-                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString(), "GenerateExample") + ")";
 
-                        builderContentTitle.AppendLine($"| [{Escape(item.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString())}) |  | {Escape(item.Text)} | {_SeeAlso} |");
+                        builderContentTitle.AppendLine($"| [{Escape(item.Cref.AsString().Replace("T:", ""))}]({GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString(), "GenerateExample")}) |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsException = false;
                     }
                 }
@@ -777,7 +780,7 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Remarks?.Seealso)
                     {
-                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString(), "GenerateExample") + ")";
 
                         builderContentTitle.AppendLine($"| {_SeeAlso.Replace("参见:", "")} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsRemarks = false;
@@ -788,7 +791,7 @@ namespace VSXmlToMarkdown
 
                     foreach (var item in member?.Remarks?.See)
                     {
-                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString()) + ")";
+                        var _SeeAlso = item.Cref == null ? "" : $"参见:[{Escape(item.Cref.AsString().Replace("T:", ""))}](" + GetTypeUrl(Escape(item.Cref), item.Cref.AsString(), item.Cref.AsString(), "GenerateExample") + ")";
 
                         builderContentTitle.AppendLine($"| {_SeeAlso.Replace("参见:", "")} |  | {Escape(item.Text)} | {_SeeAlso} |");
                         _IsRemarks = false;
@@ -911,7 +914,7 @@ namespace VSXmlToMarkdown
         /// <param name="methodName"></param>
         /// <param name="FillName"></param>
         /// <returns></returns>
-        public static string GetTypeUrl(string str, string methodName, string FillName)
+        public static string GetTypeUrl(string str, string methodName, string FillName, string catelog = "")
         {
             if (str.Contains("System.") && !str.Contains(".HIS."))
             {
@@ -927,46 +930,49 @@ namespace VSXmlToMarkdown
                 {
 
                 }
-
-                //方法
-                if (str.Contains("M:") && !str.Contains("#ctor"))
+                else if (str.Contains("M:") && !str.Contains("#ctor"))                  //方法
                 {
 
                 }
-
-                //变量
-                if (str.Contains("F:"))
+                else if (str.Contains("F:"))                //变量
                 {
 
                 }
+                else if (str.Contains("P:"))                 //属性
+                {
 
-                //类型
-                if (str.Contains("T:"))
+                }
+                else if (str.Contains("E:"))  //事件
+                {
+
+                }
+                else if (str.Contains("T:")) //类型
                 {
                     var FillInfo = GetCatelog("T:", FillName);
 
-                    return $"../../{FillInfo.Item1}/{FillInfo.Item2}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
+                    if (catelog == "GenerateBody")
+                    {
+                        return $"../../doc/{FillInfo.Item1}/{FillInfo.Item2}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
+                    }
+                    return $"../../../doc/{FillInfo.Item1}/{FillInfo.Item2}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
                 }
-
-                //属性
-                if (str.Contains("P:"))
+                else if (str.Contains(".Entities.")|| str.Contains(".Common."))                //.Entities.   //类型
                 {
 
+                    var FillInfo = GetCatelogByEntity(".Entities.", str);
+
+                    if (catelog == "GenerateBody")
+                    {
+                        return $"../../doc/{FillInfo.Item1}/{FillInfo.Item2}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
+                    }
+
+                    return $"../../../doc/{FillInfo.Item1}/{FillInfo.Item2}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
                 }
-
-                //事件
-                if (str.Contains("E:"))
+                else
                 {
+                    var FillInfo = GetCatelog("T:", FillName);
 
-                }
-
-                //.Entities.
-                //类型
-                if (str.Contains(".Entities."))
-                {
-                    var FillInfo = GetCatelog(".Entities.", str);
-
-                    return $"../../{FillInfo.Item1}/{FillInfo.Item2}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
+                    return $"../../../doc/{FillInfo.Item1}/{FillInfo.Item2}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
                 }
 
                 return "#";
@@ -1011,6 +1017,18 @@ namespace VSXmlToMarkdown
             string catelog = str.Substring(0, str.LastIndexOf("."));
 
             string fileName = str.Substring(str.LastIndexOf(".") + 1, str.Length - str.LastIndexOf(".") - 1);
+
+            return new Tuple<string, string>(catelog, fileName);
+
+        }
+
+        public static Tuple<string, string> GetCatelogByEntity(string str, string path)
+        {
+            // str = path.Replace(str, "");
+
+            string catelog = path.Substring(0, path.LastIndexOf("."));
+
+            string fileName = path.Substring(path.LastIndexOf(".") + 1, path.Length - path.LastIndexOf(".") - 1);
 
             return new Tuple<string, string>(catelog, fileName);
 
