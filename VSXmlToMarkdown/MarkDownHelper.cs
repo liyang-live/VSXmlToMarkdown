@@ -695,7 +695,8 @@ namespace VSXmlToMarkdown
 
             if (member?.Exception?.Text != null)
             {
-                builderContentTitle.AppendLine($"  {Escape(member?.Exception?.Text?.Trim())} ");
+
+                builderContentTitle.AppendLine($"  {member?.Exception?.Text?.Replace(" ", "")} ");
                 _IsException = false;
             }
             builderContentTitle.AppendLine();
@@ -750,7 +751,7 @@ namespace VSXmlToMarkdown
             #endregion
 
 
-            if (member.Name.Contains("GetSignData"))
+            if (member.Name.Contains("BatchInsert<T>"))
             {
 
             }
@@ -764,11 +765,21 @@ namespace VSXmlToMarkdown
             bool _IsRemarks = true;
             if (member?.Remarks != null && member?.Remarks.Text != null)
             {
-                builderContentTitle.AppendLine($"  <b>{Escape(string.Join(",", member?.Remarks?.Text))}</b> ");
+                //builderContentTitle.AppendLine($"  <b>{Escape(string.Join(",", member?.Remarks?.Text).Trim())}</b> ");
+
+                // member?.Remarks?.Text.ForEach(f => { f = f.Replace(" ", ""); });
+
+                foreach (var item in member?.Remarks?.Text)
+                {
+                    builderContentTitle.AppendLine($"{item.Replace(" ", "")} ");
+                }
+
+                //builderContentTitle.AppendLine($"  {string.Join(",", member?.Remarks?.Text)} ");
                 _IsRemarks = false;
             }
 
-            if (member?.Remarks != null)
+            if (member?.Remarks != null && ((member?.Remarks?.Seealso != null && member?.Remarks?.Seealso.Count > 0) ||
+                (member?.Remarks?.See != null && member?.Remarks?.See.Count > 0)))
             {
 
                 builderContentTitle.AppendLine(" ");
@@ -956,7 +967,7 @@ namespace VSXmlToMarkdown
                     }
                     return $"../../../doc/{FillInfo.Item1}/{FillInfo.Item2}.md".Replace("&#96;1", "").Replace("&#96;2", "").Replace("<T>", "");
                 }
-                else if (str.Contains(".Entities.")|| str.Contains(".Common."))                //.Entities.   //类型
+                else if (str.Contains(".Entities.") || str.Contains(".Common."))                //.Entities.   //类型
                 {
 
                     var FillInfo = GetCatelogByEntity(".Entities.", str);
