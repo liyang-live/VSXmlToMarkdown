@@ -111,7 +111,15 @@ namespace VSXmlToMarkdown
                 {
                     if (i is DirectoryInfo)     //判断是否文件夹
                     {
-                        GetDirectory(i.FullName, roopath);    //递归调用复制子文件夹
+                        //GetDirectory(i.FullName, roopath);    //递归调用复制子文件夹
+
+                        DirectoryInfo dir1 = new DirectoryInfo(i.FullName);
+                        FileSystemInfo[] fileinfo1 = dir1.GetFiles();
+
+                        foreach (FileSystemInfo files in fileinfo1)
+                        {
+                            m_fileList.Add("/" + files.FullName.Replace(roopath, "").Replace("\\", "/"));
+                        }
                     }
                     else
                     {
